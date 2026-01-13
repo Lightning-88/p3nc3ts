@@ -23,6 +23,7 @@
   --color-danger-secondary: var(--danger-secondary);
   --color-success-primary: var(--success-primary);
   --font-inter-sans: var(--font-inter-sans);
+  --font-dancing-script: var(--font-dancing-script);
 }
 
 body {
