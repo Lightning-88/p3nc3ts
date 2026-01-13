@@ -10,7 +10,7 @@ export function Button({
 }: ButtonProps) {
   return (
     <button
-      className={`bg-blue-700 py-2 px-4 text-white rounded-md text-sm hover:bg-blue-800 disabled:bg-blue-500 transition-colors duration-75 ${
+      className={`bg-secondary py-2 px-4 text-primary rounded-md text-sm hover:bg-hover disabled:bg-disabled transition-colors duration-75 ${
         className ?? ""
       }`}
       disabled={disabled}
