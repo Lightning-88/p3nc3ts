@@ -15,8 +15,8 @@ datasource db {
 model User {
   id        String   @id @default(uuid(7)) @db.Uuid
   name      String   @db.VarChar(100)
-  username  String   @db.VarChar(50)
-  email     String   @db.VarChar(50)
+  username  String   @unique @db.VarChar(50)
+  email     String   @unique @db.VarChar(50)
   password  String   @db.VarChar(255)
   bio       String?  @db.Text
   location  String?  @db.VarChar(50)
@@ -24,7 +24,8 @@ model User {
   createdAt DateTime @default(now()) @db.Timestamptz()
   updatedAt DateTime @updatedAt @db.Timestamptz()
 
-  posts Post[]
+  posts    Post[]
+  comments Comment[]
 
   @@map("users")
 }
@@ -39,7 +40,22 @@ model Post {
   createdAt DateTime @default(now()) @db.Timestamptz()
   updatedAt DateTime @updatedAt @db.Timestamptz()
 
+  comments Comment[]
+
   author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   @@map("posts")
+}
+
+model Comment {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  postId    String   @db.Uuid
+  authorId  String   @db.Uuid
+  content   String   @db.Text
+  createdAt DateTime @default(now()) @db.Timestamptz()
+
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@map("comments")
 }
