@@ -6,11 +6,20 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 
-export default function Navbar({
-  user,
-}: {
-  user?: { username: string; name: string; photo?: string };
-}) {
+type UserData = {
+  id: string;
+  username: string;
+  email: string;
+  name: string;
+  password: string;
+  bio: string | null;
+  location: string | null;
+  photo: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+} | null;
+
+export default function Navbar({ user }: { user: UserData }) {
   const [isOpen, setIsOpen] = useState(false);
   const location = usePathname();
 
@@ -47,11 +56,11 @@ export default function Navbar({
             >
               <Menu size={18} />
             </button>
-            {user?.username ? (
+            {user ? (
               <Link href="/profile">
                 <img
                   src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-                    user?.photo ? user.photo : "hello world"
+                    user?.photo ? user.photo : user.username
                   )}`}
                   alt="profile"
                   className="w-8 h-8 rounded-full"
@@ -68,7 +77,8 @@ export default function Navbar({
       <SidebarMobile
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        isLogged={user?.username ? true : false}
+        isLogged={user ? true : false}
+        user={user}
       />
       {isOpen && <Overlay setIsOpen={setIsOpen} />}
     </>
@@ -94,10 +104,12 @@ function SidebarMobile({
   isOpen,
   setIsOpen,
   isLogged,
+  user,
 }: {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   isLogged: boolean;
+  user: UserData;
 }) {
   return (
     <div
@@ -127,7 +139,7 @@ function SidebarMobile({
         ))}
         {isLogged ? (
           <Link href="/profile" className="flex gap-3 items-center mt-auto">
-            <User /> Profile
+            <User /> {user?.username}
           </Link>
         ) : (
           <Link href="/login" className="mt-auto">

@@ -1,15 +1,15 @@
-export default function HomePage() {
+import { CreatePost } from "@/components/home/create-post";
+import { getUser } from "@/lib/db/users";
+
+export default async function HomePage() {
+  const user = await getUser();
+
   return (
     <div className="w-full p-4">
-      <div className="container mx-auto">
-        <h1>root page</h1>
-        <div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat quasi,
-          est nostrum numquam incidunt ab consequatur explicabo illum eaque
-          eligendi quibusdam facilis nulla sint? Doloremque animi vero incidunt
-        </div>
+      <div className="w-full container mx-auto grid grid-cols-1 lg:grid-cols-10 gap-6">
+        <div className="lg:col-span-6">{user && <CreatePost />}</div>
 
-        <div></div>
+        <div className="hidden lg:block lg:col-end-4 sticky top-20"></div>
       </div>
     </div>
   );
