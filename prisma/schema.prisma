@@ -13,7 +13,7 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid(7)) @db.Uuid
+  id        String   @id @default(uuid()) @db.Uuid
   name      String   @db.VarChar(100)
   username  String   @unique @db.VarChar(50)
   email     String   @unique @db.VarChar(50)
@@ -31,10 +31,9 @@ model User {
 }
 
 model Post {
-  id        String   @id @default(uuid(7)) @db.Uuid
+  id        String   @id @default(uuid()) @db.Uuid
   authorId  String   @db.Uuid
-  title     String   @db.VarChar(255)
-  content   String?  @db.Text
+  content   String   @db.Text
   photo     String?  @db.VarChar(255)
   published Boolean  @default(true)
   createdAt DateTime @default(now()) @db.Timestamptz()
@@ -48,7 +47,7 @@ model Post {
 }
 
 model Comment {
-  id        String   @id @default(uuid(7)) @db.Uuid
+  id        String   @id @default(uuid()) @db.Uuid
   postId    String   @db.Uuid
   authorId  String   @db.Uuid
   content   String   @db.Text
