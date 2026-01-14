@@ -2,8 +2,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { InputGroup } from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
+import { getUser } from "@/lib/db/users";
 
-export default function ProfileSettingPage() {
+export default async function ProfileSettingPage() {
+  const user = await getUser();
+
   return (
     <div className="w-full p-4">
       <div className="container mx-auto">
@@ -15,7 +18,7 @@ export default function ProfileSettingPage() {
               <div className="flex items-center space-x-6">
                 <img
                   src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-                    "hello world"
+                    user?.username
                   )}`}
                   className="w-full h-full max-w-20 max-h-20 rounded-full"
                   alt="photo-profile"
@@ -38,7 +41,7 @@ export default function ProfileSettingPage() {
                     name="name"
                     id="name"
                     placeholder="Your name"
-                    defaultValue="server components"
+                    defaultValue={user?.name}
                   />
                 </InputGroup>
                 <InputGroup>
@@ -48,7 +51,17 @@ export default function ProfileSettingPage() {
                     name="username"
                     id="username"
                     placeholder="Your username"
-                    defaultValue="server components"
+                    defaultValue={user?.username}
+                  />
+                </InputGroup>
+                <InputGroup>
+                  <Label htmlFor="location">Location</Label>
+                  <Input
+                    type="text"
+                    name="location"
+                    id="location"
+                    placeholder="Your location"
+                    defaultValue={user?.location ?? "None"}
                   />
                 </InputGroup>
                 <div className="md:col-span-2">
@@ -58,11 +71,15 @@ export default function ProfileSettingPage() {
                       className="block resize-none p-2 text-sm border w-full h-32 border-border-primary rounded-md focus:outline-none focus:ring-2 focus:ring-secondary"
                       name="bio"
                       id="bio"
-                      placeholder="Your bio"
-                      defaultValue="server components"
+                      placeholder={user?.bio ? "" : "No bio yet"}
+                      defaultValue={user?.bio ?? ""}
                     />
                   </InputGroup>
                 </div>
+              </div>
+
+              <div className="text-sm">
+                <p>Member Since {user?.createdAt.toLocaleString("sv-SE")}</p>
               </div>
 
               <div className="flex justify-end">
