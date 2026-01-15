@@ -9,7 +9,11 @@ import { createSession } from "@/lib/auth/session";
 export async function registerAction(prevState: any, formData: FormData) {
   const registerSchema = z.object({
     name: z.string().min(2).max(100),
-    username: z.string().min(2).max(50),
+    username: z
+      .string()
+      .min(2)
+      .max(50)
+      .regex(/^\S+$/, "Username cannot contain spaces"),
     email: z.email().max(50),
     password: z.string().min(6).max(255),
   });
