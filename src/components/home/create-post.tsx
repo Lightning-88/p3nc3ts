@@ -1,12 +1,25 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { Button } from "../ui/button";
 import { InputGroup } from "../ui/input-group";
 import { postAction } from "@/app/(main)/actions";
 
 export function CreatePost() {
   const [state, formAction, pending] = useActionState(postAction, null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [photoURL, setPhotoURL] = useState<string | null>(null);
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return setPhotoURL(null);
+
+    setIsUploading(true);
+
+    setTimeout(() => {
+      setIsUploading(false);
+    }, 5000);
+  };
 
   return (
     <form action={formAction}>
@@ -27,12 +40,19 @@ export function CreatePost() {
         <div className="flex items-center">
           <input
             type="file"
-            name="photo"
             id="postPhoto"
+            accept="image/jpg,image/png,image/jpeg"
+            onChange={handleFileUpload}
             className="w-full block text-sm file:py-2 file:px-4 file:rounded-md file:cursor-pointer file:hover:opacity-80 file:border file:border-border-primary file:mr-2"
           />
+          <input
+            type="hidden"
+            name="photo"
+            id="photoLink"
+            value={photoURL ?? ""}
+          />
 
-          <Button disabled={pending}>Post</Button>
+          <Button disabled={pending || isUploading}>Post</Button>
         </div>
       </InputGroup>
     </form>
