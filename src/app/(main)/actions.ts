@@ -3,15 +3,13 @@
 import { errorResponse, successResponse } from "@/lib/action/response";
 import { prismaClient } from "@/lib/db/prisma";
 import { getUserId } from "@/lib/db/users";
+import { revalidatePath } from "next/cache";
 import z from "zod";
 
 export async function postAction(prevState: any, formData: FormData) {
   const postSchema = z.object({
     content: z.string().min(1),
-    photo: z
-      .instanceof(File)
-      .refine((file) => file.size < 1024 * 1024 * 5, "Max 5MB")
-      .optional(),
+    photo: z.string().optional(),
   });
   const result = postSchema.safeParse(Object.fromEntries(formData));
   if (result.error)
@@ -26,9 +24,12 @@ export async function postAction(prevState: any, formData: FormData) {
   await prismaClient.post.create({
     data: {
       content: result.data.content,
+      photo: result.data.photo ? result.data.photo : null,
       authorId,
     },
   });
+
+  revalidatePath("/");
 
   return successResponse("Success post", null);
 }
