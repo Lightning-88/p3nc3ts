@@ -42,7 +42,7 @@ export default function Navbar({ user }: { user: UserData }) {
 
   return (
     <>
-      <header className="fixed w-full shadow-sm bg-secondary text-primary h-14 flex items-center px-4">
+      <header className="fixed z-10 w-full shadow-sm bg-secondary text-primary h-14 flex items-center px-4">
         <nav className="container mx-auto flex justify-between">
           <Link href="/">
             <h1 className="leading-relaxed font-dancing-script font-medium text-xl">
