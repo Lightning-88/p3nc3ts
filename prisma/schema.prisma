@@ -26,6 +26,7 @@ model User {
 
   posts    Post[]
   comments Comment[]
+  likes    Like[]
 
   @@map("users")
 }
@@ -40,6 +41,7 @@ model Post {
   updatedAt DateTime @updatedAt @db.Timestamptz()
 
   comments Comment[]
+  likes    Like[]
 
   author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
@@ -57,4 +59,17 @@ model Comment {
   author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   @@map("comments")
+}
+
+model Like {
+  id        String   @id @default(uuid()) @db.Uuid
+  postId    String   @db.Uuid
+  authorId  String   @db.Uuid
+  createdAt DateTime @default(now()) @db.Timestamptz()
+
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, authorId])
+  @@map("likes")
 }
