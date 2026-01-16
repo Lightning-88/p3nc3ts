@@ -31,3 +31,11 @@ export async function getUserId() {
 
   return String(result.userId);
 }
+
+export async function getUserByUsername(username: string) {
+  return await prismaClient.user.findUnique({
+    where: {
+      username,
+    },
+  });
+}
