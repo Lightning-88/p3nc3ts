@@ -47,5 +47,15 @@ export async function getUserByUsername(username: string) {
     where: {
       username,
     },
+    select: {
+      id: true,
+      username: true,
+      name: true,
+      bio: true,
+      location: true,
+      photo: true,
+      createdAt: true,
+      updatedAt: true,
+    },
   });
 }

@@ -1,5 +1,5 @@
 import { CreatePost } from "@/components/home/create-post";
-import PostCard from "@/components/home/post-card";
+import { PostCard } from "@/components/home/post-card";
 import { prismaClient } from "@/lib/db/prisma";
 import { getUser } from "@/lib/db/users";
 
@@ -10,7 +10,34 @@ export default async function HomePage() {
       createdAt: "desc",
     },
     include: {
-      author: true,
+      author: {
+        select: {
+          id: true,
+          username: true,
+          name: true,
+          bio: true,
+          location: true,
+          photo: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      },
+      comments: {
+        include: {
+          author: {
+            select: {
+              id: true,
+              username: true,
+              name: true,
+              bio: true,
+              location: true,
+              photo: true,
+              createdAt: true,
+              updatedAt: true,
+            },
+          },
+        },
+      },
     },
   });
 

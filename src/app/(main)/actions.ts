@@ -33,3 +33,31 @@ export async function postAction(prevState: any, formData: FormData) {
 
   return successResponse("Success post", null);
 }
+
+export async function createCommentAction(prevState: any, formData: FormData) {
+  const commentSchema = z.object({
+    content: z.string().min(1),
+    postId: z.string(),
+  });
+  const result = commentSchema.safeParse(Object.fromEntries(formData));
+  if (result.error)
+    return errorResponse(
+      "Schema error",
+      z.treeifyError(result.error).properties
+    );
+
+  const authorId = await getUserId();
+  if (!authorId) return errorResponse("Auth error", null);
+
+  await prismaClient.comment.create({
+    data: {
+      content: result.data.content,
+      authorId,
+      postId: result.data.postId,
+    },
+  });
+
+  revalidatePath("/");
+
+  return successResponse("Success comment", null);
+}

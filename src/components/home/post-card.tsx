@@ -18,9 +18,7 @@ type PostData = {
   author: {
     id: string;
     username: string;
-    email: string;
     name: string;
-    password: string;
     bio: string | null;
     location: string | null;
     photo: string | null;
@@ -119,6 +117,7 @@ export function PostCard({ post }: { post: PostData }) {
       {activeModal === "comment" && (
         <CommentModal
           comments={post.comments}
+          postId={post.id}
           onClose={() => setActiveModal(null)}
         />
       )}

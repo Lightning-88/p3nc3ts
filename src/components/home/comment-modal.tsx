@@ -3,7 +3,11 @@
 import { X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useActionState, useEffect } from "react";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import { createCommentAction } from "@/app/(main)/actions";
+import { InputGroup } from "../ui/input-group";
 
 type CommentData = {
   id: string;
@@ -26,10 +30,17 @@ type CommentData = {
 export function CommentModal({
   comments,
   onClose,
+  postId,
 }: {
   comments: CommentData[];
   onClose: () => void;
+  postId: string;
 }) {
+  const [state, formAction, pending] = useActionState(
+    createCommentAction,
+    null
+  );
+
   useEffect(() => {
     if (comments) {
       document.body.style.overflow = "hidden";
@@ -42,7 +53,7 @@ export function CommentModal({
 
   return (
     <div className="fixed flex justify-center items-center h-dvh top-0 right-0 bottom-0 left-0 bg-[rgba(0,0,0,0.5)] z-10">
-      <div className="bg-primary w-full max-w-md rounded-md space-y-4 mx-4 min-h-[300px] max-h-[80vh] overflow-y-auto">
+      <div className="bg-primary w-full max-w-md rounded-md space-y-4 mx-4 min-h-[400px] overflow-hidden">
         <div className="flex justify-between border-b border-border-primary p-4 mb-4">
           <h2 className="text-lg font-bold">Comments</h2>
           <button onClick={onClose}>
@@ -51,11 +62,11 @@ export function CommentModal({
         </div>
 
         {comments.length === 0 ? (
-          <div className="flex items-center justify-center min-h-[200px]">
+          <div className="flex items-center justify-center min-h-[400px]">
             No comments yet.
           </div>
         ) : (
-          <div className="space-y-4 pt-0 p-4">
+          <div className="space-y-4 pt-0 p-4 overflow-auto min-h-[400px] max-h-[400px]">
             {comments.map((comment) => (
               <div
                 key={comment.id}
@@ -99,6 +110,24 @@ export function CommentModal({
             ))}
           </div>
         )}
+
+        <form action={formAction} className="flex pt-0 p-4 gap-2">
+          <input type="hidden" name="postId" value={postId} />
+          <InputGroup>
+            <Input
+              type="text"
+              name="content"
+              placeholder="Apa pendapat anda tentang ini"
+            />
+            {state?.errors?.content && (
+              <span className="text-danger-primary text-xs">
+                {state?.errors?.content.errors[0]}
+              </span>
+            )}
+          </InputGroup>
+
+          <Button disabled={pending}>Send</Button>
+        </form>
       </div>
     </div>
   );
