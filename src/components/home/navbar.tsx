@@ -9,9 +9,7 @@ import { Button } from "../ui/button";
 type UserData = {
   id: string;
   username: string;
-  email: string;
   name: string;
-  password: string;
   bio: string | null;
   location: string | null;
   photo: string | null;

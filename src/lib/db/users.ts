@@ -11,6 +11,16 @@ export async function getUser() {
     where: {
       id: String(result.userId),
     },
+    select: {
+      id: true,
+      username: true,
+      name: true,
+      bio: true,
+      location: true,
+      photo: true,
+      createdAt: true,
+      updatedAt: true,
+    },
   });
 
   return user;
