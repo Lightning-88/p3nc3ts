@@ -2,6 +2,7 @@ import { CreatePost } from "@/components/home/create-post";
 import { PostCard } from "@/components/home/post-card";
 import { prismaClient } from "@/lib/db/prisma";
 import { getUser } from "@/lib/db/users";
+import { headers } from "next/headers";
 
 export default async function HomePage() {
   const user = await getUser();
