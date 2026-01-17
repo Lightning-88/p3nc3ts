@@ -10,15 +10,44 @@ export function CreatePost() {
   const [isUploading, setIsUploading] = useState(false);
   const [photoURL, setPhotoURL] = useState<string | null>(null);
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return setPhotoURL(null);
 
-    setIsUploading(true);
+    try {
+      setIsUploading(true);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/upload`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ fileName: file.name }),
+        },
+      );
+      const result = await response.json();
+      if (!result.success) throw new Error("Failed to get signed URL");
 
-    setTimeout(() => {
+      const { signedUrl, path } = result.data;
+
+      const uploadResponse = await fetch(signedUrl, {
+        method: "PUT",
+        headers: {
+          "Content-Type": file.type,
+        },
+        body: file,
+      });
+      if (!uploadResponse.ok) throw new Error("Failed to upload file");
+
+      setPhotoURL(path);
+    } catch {
+      setPhotoURL(null);
+      alert("Error uploading file");
+    } finally {
       setIsUploading(false);
-    }, 5000);
+      e.target.files = null;
+    }
   };
 
   return (
@@ -43,7 +72,7 @@ export function CreatePost() {
             id="postPhoto"
             accept="image/jpg,image/png,image/jpeg"
             onChange={handleFileUpload}
-            className="w-full block text-sm file:py-2 file:px-4 file:rounded-md file:cursor-pointer file:hover:opacity-80 file:border file:border-border-primary file:mr-2"
+            className="w-full block text-sm file:Photo file:py-2 file:px-4 file:rounded-md file:cursor-pointer file:hover:opacity-80 file:border file:border-border-primary file:mr-2"
           />
           <input
             type="hidden"
