@@ -39,7 +39,7 @@ export function CommentModal({
 }) {
   const [state, formAction, pending] = useActionState(
     createCommentAction,
-    null
+    null,
   );
 
   useEffect(() => {
@@ -68,7 +68,7 @@ export function CommentModal({
           </div>
         ) : (
           <div className="space-y-4 pt-0 p-4 overflow-auto min-h-[400px] max-h-[400px]">
-            {comments.map((comment) => (
+            {comments.map((comment: CommentData) => (
               <div
                 key={comment.id}
                 className="inset-shadow-xs shadow-xs p-4 space-y-2 rounded-md"
@@ -82,7 +82,7 @@ export function CommentModal({
                       src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
                         comment.author.photo
                           ? comment.author.photo
-                          : comment.author.username
+                          : comment.author.username,
                       )}`}
                       alt="profile"
                       className="rounded-full"

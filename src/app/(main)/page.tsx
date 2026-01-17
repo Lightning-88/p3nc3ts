@@ -2,7 +2,6 @@ import { CreatePost } from "@/components/home/create-post";
 import { PostCard } from "@/components/home/post-card";
 import { prismaClient } from "@/lib/db/prisma";
 import { getUser } from "@/lib/db/users";
-import { headers } from "next/headers";
 
 export default async function HomePage() {
   const user = await getUser();
@@ -42,13 +41,50 @@ export default async function HomePage() {
     },
   });
 
+  type PostDataType = {
+    id: string;
+    photo: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+    authorId: string;
+    content: string;
+    published: boolean;
+    author: {
+      id: string;
+      username: string;
+      name: string;
+      bio: string | null;
+      location: string | null;
+      photo: string | null;
+      createdAt: Date;
+      updatedAt: Date;
+    };
+    comments: {
+      id: string;
+      createdAt: Date;
+      authorId: string;
+      content: string;
+      postId: string;
+      author: {
+        id: string;
+        username: string;
+        name: string;
+        bio: string | null;
+        location: string | null;
+        photo: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+      };
+    }[];
+  };
+
   return (
     <div className="w-full p-4">
       <div className="w-full container mx-auto grid grid-cols-1 lg:grid-cols-10 gap-6">
         <div className="lg:col-span-6">{user && <CreatePost />}</div>
 
         <div className="space-y-8">
-          {posts.map((post) => (
+          {posts.map((post: PostDataType) => (
             <PostCard key={post.id} post={post} />
           ))}
         </div>
