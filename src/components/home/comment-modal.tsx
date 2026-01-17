@@ -8,6 +8,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { createCommentAction } from "@/app/(main)/actions";
 import { InputGroup } from "../ui/input-group";
+import { ExpandableText } from "../ui/expandeble-text";
 
 type CommentData = {
   id: string;
@@ -105,7 +106,10 @@ export function CommentModal({
                     </div>
                   </div>
                 </div>
-                <p className="text-sm">{comment.content}</p>
+
+                <div className="text-sm">
+                  <ExpandableText text={comment.content} />
+                </div>
               </div>
             ))}
           </div>
