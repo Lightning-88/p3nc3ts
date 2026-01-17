@@ -31,9 +31,11 @@ export default async function OtherProfilePage({
         </div>
 
         <div>
-          <h1 className="text-xl font-bold">{user.name || user.username}</h1>
+          <h1 className="text-xl font-bold">{user.name}</h1>
           <p className="text-disabled">@{user.username}</p>
-          <p className="leading-normal">{user.bio ?? "No bio available"}</p>
+          <p className="leading-normal text-justify">
+            {user.bio ?? "No bio available"}
+          </p>
         </div>
 
         <div className="flex justify-between items-center text-sm text-disabled">
@@ -42,10 +44,10 @@ export default async function OtherProfilePage({
           </div>
           <div className="flex gap-4 text-sm">
             <div>
-              <span className="font-bold">420</span> <span>Following</span>
+              <span className="font-bold">0</span> <span>Following</span>
             </div>
             <div>
-              <span className="font-bold">1.2K</span> <span>Followers</span>
+              <span className="font-bold">0</span> <span>Followers</span>
             </div>
           </div>
         </div>

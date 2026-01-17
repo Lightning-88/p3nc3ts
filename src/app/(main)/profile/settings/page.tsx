@@ -3,9 +3,14 @@ import { Input } from "@/components/ui/input";
 import { InputGroup } from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
 import { getUser } from "@/lib/db/users";
+import Image from "next/image";
 
 export default async function ProfileSettingPage() {
   const user = await getUser();
+
+  if (!user) {
+    return <div>User not found</div>;
+  }
 
   return (
     <div className="w-full p-4">
@@ -16,13 +21,18 @@ export default async function ProfileSettingPage() {
 
             <form className="space-y-6">
               <div className="flex items-center space-x-6">
-                <img
-                  src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-                    user?.username
-                  )}`}
-                  className="w-full h-full max-w-20 max-h-20 rounded-full"
-                  alt="photo-profile"
-                />
+                <div className="w-20 h-20">
+                  <Image
+                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      user.photo ? user.photo : user.username
+                    )}`}
+                    alt="photo-profile"
+                    className="rounded-full"
+                    width={80}
+                    height={80}
+                    unoptimized
+                  />
+                </div>
                 <div>
                   <input
                     type="file"
@@ -41,7 +51,7 @@ export default async function ProfileSettingPage() {
                     name="name"
                     id="name"
                     placeholder="Your name"
-                    defaultValue={user?.name}
+                    defaultValue={user.name}
                   />
                 </InputGroup>
                 <InputGroup>
@@ -51,7 +61,7 @@ export default async function ProfileSettingPage() {
                     name="username"
                     id="username"
                     placeholder="Your username"
-                    defaultValue={user?.username}
+                    defaultValue={user.username}
                   />
                 </InputGroup>
                 <InputGroup>
@@ -61,7 +71,7 @@ export default async function ProfileSettingPage() {
                     name="location"
                     id="location"
                     placeholder="Your location"
-                    defaultValue={user?.location ?? "None"}
+                    defaultValue={user.location ?? "None"}
                   />
                 </InputGroup>
                 <div className="md:col-span-2">
@@ -71,15 +81,15 @@ export default async function ProfileSettingPage() {
                       className="block resize-none p-2 text-sm border w-full h-32 border-border-primary rounded-md focus:outline-none focus:ring-2 focus:ring-secondary"
                       name="bio"
                       id="bio"
-                      placeholder={user?.bio ? "" : "No bio yet"}
-                      defaultValue={user?.bio ?? ""}
+                      placeholder={user.bio ? "" : "No bio yet"}
+                      defaultValue={user.bio ?? ""}
                     />
                   </InputGroup>
                 </div>
               </div>
 
               <div className="text-sm">
-                <p>Member Since {user?.createdAt.toLocaleString("sv-SE")}</p>
+                <p>Member Since {user.createdAt.toLocaleString("sv-SE")}</p>
               </div>
 
               <div className="flex justify-end">
