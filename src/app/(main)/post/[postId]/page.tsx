@@ -1,6 +1,7 @@
 import { CopyButton } from "@/components/ui/copy-button";
 import { ExpandableText } from "@/components/ui/expandeble-text";
 import { prismaClient } from "@/lib/db/prisma";
+import { CommentData } from "@/types/post";
 import { Heart, LucideShare2, MessageCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -128,7 +129,7 @@ export default async function PostPage({
           <div>No comments yet.</div>
         ) : (
           <div className="space-y-4">
-            {post.comments.map((comment) => (
+            {post.comments.map((comment: CommentData) => (
               <div
                 key={comment.id}
                 className="inset-shadow-xs shadow-xs p-4 space-y-2 rounded-md"
