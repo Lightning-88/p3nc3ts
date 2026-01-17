@@ -8,7 +8,7 @@ export async function proxy(request: NextRequest) {
 
   if (!result?.userId)
     return NextResponse.redirect(
-      new URL("/login?err=login first", request.nextUrl)
+      new URL("/login?err=login first", request.nextUrl),
     );
 
   const next = NextResponse.next();
@@ -18,5 +18,9 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/(profile|profile/settings)", "/notifications/:path*"],
+  matcher: [
+    "/api/:path*",
+    "/(profile|profile/settings)",
+    "/notifications/:path*",
+  ],
 };
