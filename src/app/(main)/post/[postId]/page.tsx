@@ -68,7 +68,7 @@ export default async function PostPage({
           >
             <Image
               src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-                post?.author.photo ? post.author.photo : post.author.username
+                post?.author.photo ? post.author.photo : post.author.username,
               )}`}
               alt="profile"
               className="rounded-full"
@@ -99,7 +99,7 @@ export default async function PostPage({
         <div className="relative w-full overflow-hidden rounded-xl border border-border-primary aspect-square">
           <Image
             alt={post.id}
-            src={post.photo}
+            src={`${process.env.NEXT_PUBLIC_STORAGE_SUPABASE_URL}/${post.photo}`}
             fill
             priority
             unoptimized
@@ -142,7 +142,7 @@ export default async function PostPage({
                       src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
                         comment.author.photo
                           ? comment.author.photo
-                          : comment.author.username
+                          : comment.author.username,
                       )}`}
                       alt="profile"
                       className="rounded-full"

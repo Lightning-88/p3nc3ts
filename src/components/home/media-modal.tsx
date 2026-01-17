@@ -3,9 +3,11 @@ import Image from "next/image";
 
 export function MediaModal({
   mediaUrl,
+  postId,
   onClose,
 }: {
   mediaUrl: string;
+  postId: string;
   onClose: () => void;
 }) {
   return (
@@ -20,13 +22,13 @@ export function MediaModal({
 
         <div className="max-w-full flex items-center justify-center p-4">
           <Image
-            alt="media"
+            alt={postId}
             src={mediaUrl}
             width={400}
             height={400}
             priority
             unoptimized
-            className="object-cover"
+            className="object-cover rounded-md"
           />
         </div>
       </div>

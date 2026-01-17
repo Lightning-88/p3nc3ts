@@ -4,7 +4,7 @@ import Image from "next/image";
 import { ExpandableText } from "../ui/expandeble-text";
 import Link from "next/link";
 import { Heart, LucideShare2, MessageCircle } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CommentModal } from "./comment-modal";
 import { CopyButton } from "../ui/copy-button";
 import { MediaModal } from "./media-modal";
@@ -49,6 +49,14 @@ type PostData = {
 export function PostCard({ post }: { post: PostData }) {
   const [activeModal, setActiveModal] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (activeModal) document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style = "";
+    };
+  }, [activeModal]);
+
   return (
     <>
       <div className="inset-shadow-xs rounded-md space-y-4 border border-border-primary p-4">
@@ -91,7 +99,7 @@ export function PostCard({ post }: { post: PostData }) {
           <div className="relative w-full overflow-hidden rounded-xl border border-border-primary aspect-square">
             <Image
               alt={post.id}
-              src={post.photo}
+              src={`${process.env.NEXT_PUBLIC_STORAGE_SUPABASE_URL}/${post.photo}`}
               fill
               priority
               unoptimized
@@ -131,7 +139,8 @@ export function PostCard({ post }: { post: PostData }) {
 
       {activeModal === "media" && (
         <MediaModal
-          mediaUrl={post.photo ?? "none"}
+          mediaUrl={`${process.env.NEXT_PUBLIC_STORAGE_SUPABASE_URL}/${post.photo}`}
+          postId={post.id}
           onClose={() => setActiveModal(null)}
         />
       )}
