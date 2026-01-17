@@ -6,6 +6,8 @@ import Link from "next/link";
 import { Heart, LucideShare2, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { CommentModal } from "./comment-modal";
+import { CopyButton } from "../ui/copy-button";
+import { MediaModal } from "./media-modal";
 
 type PostData = {
   id: string;
@@ -58,7 +60,7 @@ export function PostCard({ post }: { post: PostData }) {
             >
               <Image
                 src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-                  post?.author.photo ? post.author.photo : post.author.username
+                  post?.author.photo ? post.author.photo : post.author.username,
                 )}`}
                 alt="profile"
                 className="rounded-full"
@@ -94,6 +96,7 @@ export function PostCard({ post }: { post: PostData }) {
               priority
               unoptimized
               className="object-cover transition-transform duration-300 hover:scale-105"
+              onClick={() => setActiveModal("media")}
             />
           </div>
         )}
@@ -108,9 +111,13 @@ export function PostCard({ post }: { post: PostData }) {
           >
             <MessageCircle size={22} /> {post.comments.length}
           </button>
-          <button className="flex gap-1">
-            <LucideShare2 size={22} />
-          </button>
+          <CopyButton
+            text={`${process.env.NEXT_PUBLIC_APP_URL}/post/${post.id}`}
+          >
+            <button className="flex gap-1">
+              <LucideShare2 size={22} />
+            </button>
+          </CopyButton>
         </div>
       </div>
 
@@ -118,6 +125,13 @@ export function PostCard({ post }: { post: PostData }) {
         <CommentModal
           comments={post.comments}
           postId={post.id}
+          onClose={() => setActiveModal(null)}
+        />
+      )}
+
+      {activeModal === "media" && (
+        <MediaModal
+          mediaUrl={post.photo ?? "none"}
           onClose={() => setActiveModal(null)}
         />
       )}
