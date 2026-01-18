@@ -11,3 +11,7 @@ export async function createSession(userId: string) {
     expires: expiresAt,
   });
 }
+
+export async function deleteSession() {
+  return (await cookies()).delete("s");
+}
