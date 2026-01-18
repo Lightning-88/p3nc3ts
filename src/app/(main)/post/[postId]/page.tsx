@@ -68,9 +68,13 @@ export default async function PostPage({
             className="inline-block mr-4"
           >
             <Image
-              src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-                post?.author.photo ? post.author.photo : post.author.username,
-              )}`}
+              src={
+                post.author.photo
+                  ? `${process.env.NEXT_PUBLIC_STORAGE_SUPABASE_URL}/${post.author.photo}`
+                  : `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      post.author.username,
+                    )}`
+              }
               alt="profile"
               className="rounded-full"
               width={48}
@@ -140,11 +144,13 @@ export default async function PostPage({
                     className="inline-block mr-4"
                   >
                     <Image
-                      src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-                        comment.author.photo
-                          ? comment.author.photo
-                          : comment.author.username,
-                      )}`}
+                      src={
+                        post.author.photo
+                          ? `${process.env.NEXT_PUBLIC_STORAGE_SUPABASE_URL}/${post.author.photo}`
+                          : `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                              post.author.username,
+                            )}`
+                      }
                       alt="profile"
                       className="rounded-full"
                       width={44}

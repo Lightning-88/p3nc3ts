@@ -23,9 +23,13 @@ export default async function ProfileSettingPage() {
               <div className="flex items-center space-x-6">
                 <div className="w-20 h-20">
                   <Image
-                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-                      user.photo ? user.photo : user.username
-                    )}`}
+                    src={
+                      user.photo
+                        ? `${process.env.NEXT_PUBLIC_STORAGE_SUPABASE_URL}/${user.photo}`
+                        : `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                            user.username,
+                          )}`
+                    }
                     alt="photo-profile"
                     className="rounded-full"
                     width={80}

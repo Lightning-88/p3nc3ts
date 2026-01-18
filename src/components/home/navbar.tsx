@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
+import Image from "next/image";
 
 type UserData = {
   id: string;
@@ -56,12 +57,19 @@ export default function Navbar({ user }: { user: UserData }) {
             </button>
             {user ? (
               <Link href="/profile">
-                <img
-                  src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-                    user?.photo ? user.photo : user.username
-                  )}`}
+                <Image
+                  src={
+                    user.photo
+                      ? `${process.env.NEXT_PUBLIC_STORAGE_SUPABASE_URL}/${user.photo}`
+                      : `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                          user.username,
+                        )}`
+                  }
                   alt="profile"
-                  className="w-8 h-8 rounded-full"
+                  className="rounded-full"
+                  width={32}
+                  height={32}
+                  unoptimized
                 />
               </Link>
             ) : (

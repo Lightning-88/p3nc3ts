@@ -79,11 +79,13 @@ export function CommentModal({
                     className="inline-block mr-4"
                   >
                     <Image
-                      src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      src={
                         comment.author.photo
-                          ? comment.author.photo
-                          : comment.author.username,
-                      )}`}
+                          ? `${process.env.NEXT_PUBLIC_STORAGE_SUPABASE_URL}/${comment.author.photo}`
+                          : `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                              comment.author.username,
+                            )}`
+                      }
                       alt="profile"
                       className="rounded-full"
                       width={44}

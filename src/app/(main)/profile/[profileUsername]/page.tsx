@@ -19,9 +19,13 @@ export default async function OtherProfilePage({
       <div className="p-4 space-y-2">
         <div className="h-24 w-24">
           <Image
-            src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-              user.photo ? user.photo : user.username
-            )}`}
+            src={
+              user.photo
+                ? `${process.env.NEXT_PUBLIC_STORAGE_SUPABASE_URL}/${user.photo}`
+                : `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                    user.username,
+                  )}`
+            }
             alt="profile"
             className="rounded-full"
             width={96}

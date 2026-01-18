@@ -28,7 +28,7 @@ export function MediaModal({
             height={400}
             priority
             unoptimized
-            className="object-cover rounded-md"
+            className="w-auto max-h-[70vh] object-cover rounded-md"
           />
         </div>
       </div>
