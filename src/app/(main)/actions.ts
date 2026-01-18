@@ -15,7 +15,7 @@ export async function postAction(prevState: any, formData: FormData) {
   if (result.error)
     return errorResponse(
       "Schema error",
-      z.treeifyError(result.error).properties
+      z.treeifyError(result.error).properties,
     );
 
   const authorId = await getUserId();
@@ -43,7 +43,7 @@ export async function createCommentAction(prevState: any, formData: FormData) {
   if (result.error)
     return errorResponse(
       "Schema error",
-      z.treeifyError(result.error).properties
+      z.treeifyError(result.error).properties,
     );
 
   const authorId = await getUserId();
@@ -60,4 +60,46 @@ export async function createCommentAction(prevState: any, formData: FormData) {
   revalidatePath("/");
 
   return successResponse("Success comment", null);
+}
+
+export async function likeAction(postId: string) {
+  const authorId = await getUserId();
+  if (!authorId) return errorResponse("Auth error", null);
+
+  const isLike = await prismaClient.like.findUnique({
+    where: {
+      postId_authorId: {
+        authorId,
+        postId,
+      },
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (isLike) {
+    await prismaClient.like.delete({
+      where: {
+        postId_authorId: {
+          authorId,
+          postId,
+        },
+      },
+    });
+
+    revalidatePath("/");
+    return errorResponse("You already like this post", null);
+  }
+
+  await prismaClient.like.create({
+    data: {
+      authorId,
+      postId,
+    },
+  });
+
+  revalidatePath("/");
+
+  return successResponse("Success like", null);
 }

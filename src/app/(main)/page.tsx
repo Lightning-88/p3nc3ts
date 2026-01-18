@@ -1,11 +1,11 @@
 import { CreatePost } from "@/components/home/create-post";
 import { PostCard } from "@/components/home/post-card";
 import { prismaClient } from "@/lib/db/prisma";
-import { getUser } from "@/lib/db/users";
+import { getUserId } from "@/lib/db/users";
 import { PostDataType } from "@/types/post";
 
 export default async function HomePage() {
-  const user = await getUser();
+  const user = await getUserId();
   const posts = await prismaClient.post.findMany({
     orderBy: {
       createdAt: "desc",
@@ -37,6 +37,11 @@ export default async function HomePage() {
               updatedAt: true,
             },
           },
+        },
+      },
+      _count: {
+        select: {
+          likes: true,
         },
       },
     },

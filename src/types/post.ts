@@ -6,6 +6,9 @@ export type PostDataType = {
   authorId: string;
   content: string;
   published: boolean;
+  _count: {
+    likes: number;
+  };
   author: {
     id: string;
     username: string;

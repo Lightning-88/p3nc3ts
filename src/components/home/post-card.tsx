@@ -8,45 +8,10 @@ import { useEffect, useState } from "react";
 import { CommentModal } from "./comment-modal";
 import { CopyButton } from "../ui/copy-button";
 import { MediaModal } from "./media-modal";
+import { likeAction } from "@/app/(main)/actions";
+import { PostDataType } from "@/types/post";
 
-type PostData = {
-  id: string;
-  photo: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  authorId: string;
-  content: string;
-  published: boolean;
-  author: {
-    id: string;
-    username: string;
-    name: string;
-    bio: string | null;
-    location: string | null;
-    photo: string | null;
-    createdAt: Date;
-    updatedAt: Date;
-  };
-  comments: {
-    id: string;
-    createdAt: Date;
-    authorId: string;
-    content: string;
-    postId: string;
-    author: {
-      id: string;
-      username: string;
-      name: string;
-      bio: string | null;
-      location: string | null;
-      photo: string | null;
-      createdAt: Date;
-      updatedAt: Date;
-    };
-  }[];
-};
-
-export function PostCard({ post }: { post: PostData }) {
+export function PostCard({ post }: { post: PostDataType }) {
   const [activeModal, setActiveModal] = useState<string | null>(null);
 
   useEffect(() => {
@@ -67,9 +32,13 @@ export function PostCard({ post }: { post: PostData }) {
               className="inline-block mr-4"
             >
               <Image
-                src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-                  post?.author.photo ? post.author.photo : post.author.username,
-                )}`}
+                src={
+                  post.author.photo
+                    ? `${process.env.NEXT_PUBLIC_STORAGE_SUPABASE_URL}/${post.author.photo}`
+                    : `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                        post.author.username,
+                      )}`
+                }
                 alt="profile"
                 className="rounded-full"
                 width={48}
@@ -110,8 +79,11 @@ export function PostCard({ post }: { post: PostData }) {
         )}
 
         <div className="flex gap-2">
-          <button className="flex gap-1">
-            <Heart /> {0}
+          <button
+            className="flex gap-1"
+            onClick={async () => await likeAction(post.id)}
+          >
+            <Heart /> {post._count.likes >= 0 ? post._count.likes : 0}
           </button>
           <button
             className="flex gap-1"
