@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import z from "zod";
 import { prismaClient } from "@/lib/db/prisma";
 import { errorResponse, successResponse } from "@/lib/action/response";
-import { createSession } from "@/lib/auth/session";
+import { createSession, deleteSession } from "@/lib/auth/session";
 
 export async function registerAction(prevState: any, formData: FormData) {
   const registerSchema = z.object({
@@ -21,7 +21,7 @@ export async function registerAction(prevState: any, formData: FormData) {
   if (result.error)
     return errorResponse(
       "Schema error",
-      z.treeifyError(result.error).properties
+      z.treeifyError(result.error).properties,
     );
 
   const { name, username, email, password } = result.data;
@@ -59,7 +59,7 @@ export async function loginAction(prevState: any, formData: FormData) {
   if (result.error)
     return errorResponse(
       "Schema error",
-      z.treeifyError(result.error).properties
+      z.treeifyError(result.error).properties,
     );
 
   const user = await prismaClient.user.findUnique({
@@ -76,11 +76,17 @@ export async function loginAction(prevState: any, formData: FormData) {
 
   const verifyPassword = await bcrypt.compare(
     result.data.password,
-    user.password
+    user.password,
   );
   if (!verifyPassword) return errorResponse("Email or password wrong", null);
 
   await createSession(user.id);
 
   return successResponse("Berhasil login", null);
+}
+
+export async function logoutAction() {
+  await deleteSession();
+
+  return successResponse("Berhasil logout", null);
 }
