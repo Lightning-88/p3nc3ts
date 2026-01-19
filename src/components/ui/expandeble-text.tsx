@@ -17,7 +17,7 @@ export function ExpandableText({
 
   return (
     <div>
-      <p className="text-justify whitespace-pre-line">
+      <p className="whitespace-pre-line wrap-break-word">
         {displayText}{" "}
         {isLongText && (
           <button

@@ -9,7 +9,7 @@ export default function ProfilePage() {
   return (
     <div className="p-4 flex gap-2">
       <Link href="/profile/settings">
-        <Button>settings</Button>
+        <Button>Settings</Button>
       </Link>
 
       <button
@@ -19,8 +19,8 @@ export default function ProfilePage() {
 
           const response = await logoutAction();
           if (response.success) {
-            alert("Success, redirecting in 3 seconds");
-            setTimeout(() => redirect("/"), 3000);
+            alert("Success, redirecting in a seconds");
+            redirect("/");
           }
         }}
         className="bg-danger-primary text-primary py-2 px-4 rounded-md text-sm transition-colors duration-75"

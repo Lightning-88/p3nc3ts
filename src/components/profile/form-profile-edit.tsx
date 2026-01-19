@@ -136,7 +136,14 @@ function EditProfileInformation({ user }: { user: UserData }) {
 
   return (
     <form action={formEditAction} className="space-y-6">
+      {editProfileState?.message && !editProfileState.success && (
+        <span className="bg-danger-secondary text-danger-primary border-l-4 border-danger-primary p-4 rounded-md text-sm md:text-base">
+          {editProfileState.message}
+        </span>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <input type="hidden" name="userId" value={user.id} />
         <InputGroup>
           <Label htmlFor="name">Name</Label>
           <Input
@@ -160,8 +167,6 @@ function EditProfileInformation({ user }: { user: UserData }) {
             id="username"
             placeholder="Your username"
             defaultValue={user.username}
-            disabled
-            className="disabled:opacity-50"
           />
           {!editProfileState?.success && editProfileState?.errors?.username && (
             <span className="text-danger-primary text-xs">

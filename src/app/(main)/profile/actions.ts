@@ -8,6 +8,7 @@ import z from "zod";
 
 export async function editProfileAction(prevState: any, formData: FormData) {
   const editProfileSchema = z.object({
+    userId: z.uuid({ version: "v4" }),
     name: z.string().min(2).max(100),
     username: z.string().min(2).max(50),
     location: z.string().optional().or(z.literal("")),
@@ -19,11 +20,14 @@ export async function editProfileAction(prevState: any, formData: FormData) {
       "Schema error",
       z.treeifyError(result.error).properties,
     );
-  const { name, username, location, bio } = result.data;
+  const { userId, name, username, location, bio } = result.data;
 
-  const isExistingUsername = await prismaClient.user.findUnique({
+  const isExistingUsername = await prismaClient.user.findFirst({
     where: {
       username,
+      NOT: {
+        id: userId,
+      },
     },
     select: {
       username: true,
@@ -40,7 +44,7 @@ export async function editProfileAction(prevState: any, formData: FormData) {
       bio,
     },
     where: {
-      username,
+      id: userId,
     },
     select: {
       id: true,
