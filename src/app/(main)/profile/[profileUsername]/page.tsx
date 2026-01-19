@@ -1,4 +1,7 @@
-import { getUserByUsername } from "@/lib/db/users";
+import { PostCard } from "@/components/home/post-card";
+import { prismaClient } from "@/lib/db/prisma";
+import { getUserByUsername, getUserId } from "@/lib/db/users";
+import { PostDataType } from "@/types/post";
 import { MapPin } from "lucide-react";
 import Image from "next/image";
 
@@ -14,9 +17,55 @@ export default async function OtherProfilePage({
     return <div>User not found</div>;
   }
 
+  const isAuth = await getUserId();
+
+  const posts = await prismaClient.post.findMany({
+    where: {
+      authorId: user.id,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      author: {
+        select: {
+          id: true,
+          username: true,
+          name: true,
+          bio: true,
+          location: true,
+          photo: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      },
+      comments: {
+        include: {
+          author: {
+            select: {
+              id: true,
+              username: true,
+              name: true,
+              bio: true,
+              location: true,
+              photo: true,
+              createdAt: true,
+              updatedAt: true,
+            },
+          },
+        },
+      },
+      _count: {
+        select: {
+          likes: true,
+        },
+      },
+    },
+  });
+
   return (
     <div>
-      <div className="p-4 space-y-2">
+      <div className="p-4 space-y-2 mb-4 shadow">
         <div className="h-24 w-24">
           <Image
             src={
@@ -37,9 +86,7 @@ export default async function OtherProfilePage({
         <div>
           <h1 className="text-xl font-bold">{user.name}</h1>
           <p className="text-disabled">@{user.username}</p>
-          <p className="leading-normal text-justify">
-            {user.bio ?? "No bio available"}
-          </p>
+          <p className="leading-normal">{user.bio ?? "No bio available"}</p>
         </div>
 
         <div className="flex justify-between items-center text-sm text-disabled">
@@ -55,6 +102,12 @@ export default async function OtherProfilePage({
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="space-y-8 p-4">
+        {posts.map((post: PostDataType) => (
+          <PostCard key={post.id} post={post} userId={isAuth} />
+        ))}
       </div>
     </div>
   );

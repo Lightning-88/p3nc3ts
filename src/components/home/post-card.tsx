@@ -11,7 +11,13 @@ import { MediaModal } from "./media-modal";
 import { likeAction } from "@/app/(main)/actions";
 import { PostDataType } from "@/types/post";
 
-export function PostCard({ post }: { post: PostDataType }) {
+export function PostCard({
+  post,
+  userId,
+}: {
+  post: PostDataType;
+  userId: string | null;
+}) {
   const [activeModal, setActiveModal] = useState<string | null>(null);
 
   useEffect(() => {
@@ -105,6 +111,7 @@ export function PostCard({ post }: { post: PostDataType }) {
         <CommentModal
           comments={post.comments}
           postId={post.id}
+          userId={userId}
           onClose={() => setActiveModal(null)}
         />
       )}
