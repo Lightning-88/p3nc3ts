@@ -1,14 +1,9 @@
 "use client";
 
 import { X } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { useActionState, useEffect } from "react";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { createCommentAction } from "@/app/(main)/actions";
-import { InputGroup } from "../ui/input-group";
-import { ExpandableText } from "../ui/expandeble-text";
+import { useEffect } from "react";
+import { CommentCard } from "../post/comment-card";
+import { CreateComment } from "../post/create-comment";
 
 type CommentData = {
   id: string;
@@ -32,16 +27,13 @@ export function CommentModal({
   comments,
   onClose,
   postId,
+  userId,
 }: {
   comments: CommentData[];
   onClose: () => void;
   postId: string;
+  userId: string | null;
 }) {
-  const [state, formAction, pending] = useActionState(
-    createCommentAction,
-    null,
-  );
-
   useEffect(() => {
     if (comments) {
       document.body.style.overflow = "hidden";
@@ -69,71 +61,14 @@ export function CommentModal({
         ) : (
           <div className="space-y-4 pt-0 p-4 overflow-auto min-h-[400px] max-h-[400px]">
             {comments.map((comment: CommentData) => (
-              <div
-                key={comment.id}
-                className="inset-shadow-xs shadow-xs p-4 space-y-2 rounded-md"
-              >
-                <div className="flex items-center">
-                  <Link
-                    href={`/profile/${comment.author.username}`}
-                    className="inline-block mr-4"
-                  >
-                    <Image
-                      src={
-                        comment.author.photo
-                          ? `${process.env.NEXT_PUBLIC_STORAGE_SUPABASE_URL}/${comment.author.photo}`
-                          : `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                              comment.author.username,
-                            )}`
-                      }
-                      alt="profile"
-                      className="rounded-full"
-                      width={44}
-                      height={44}
-                      unoptimized
-                    />
-                  </Link>
-
-                  <div className="flex flex-col justify-center">
-                    <div>
-                      <Link
-                        href={`/profile/${comment.author.username}`}
-                        className="inline-block font-bold text-sm"
-                      >
-                        {comment.author.name}
-                      </Link>
-                    </div>
-                    <div className="text-disabled text-xs">
-                      {comment.createdAt.toLocaleString("sv-SE")}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="text-sm">
-                  <ExpandableText text={comment.content} />
-                </div>
-              </div>
+              <CommentCard key={comment.id} comment={comment} />
             ))}
           </div>
         )}
 
-        <form action={formAction} className="flex pt-0 p-4 gap-2">
-          <input type="hidden" name="postId" value={postId} />
-          <InputGroup>
-            <Input
-              type="text"
-              name="content"
-              placeholder="Apa pendapat anda tentang ini"
-            />
-            {state?.errors?.content && (
-              <span className="text-danger-primary text-xs">
-                {state?.errors?.content.errors[0]}
-              </span>
-            )}
-          </InputGroup>
-
-          <Button disabled={pending}>Send</Button>
-        </form>
+        {userId && (
+          <CreateComment postId={postId} className="flex gap-2 pt-0 p-4" />
+        )}
       </div>
     </div>
   );

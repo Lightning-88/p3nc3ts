@@ -1,8 +1,12 @@
+import { CommentCard } from "@/components/post/comment-card";
+import { CreateComment } from "@/components/post/create-comment";
+import { LikePostButton } from "@/components/post/like-post-button";
 import { CopyButton } from "@/components/ui/copy-button";
 import { ExpandableText } from "@/components/ui/expandeble-text";
 import { prismaClient } from "@/lib/db/prisma";
+import { getUserId } from "@/lib/db/users";
 import { CommentData } from "@/types/post";
-import { Heart, LucideShare2, MessageCircle } from "lucide-react";
+import { LucideShare2, MessageCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import z from "zod";
@@ -52,12 +56,19 @@ export default async function PostPage({
           },
         },
       },
+      _count: {
+        select: {
+          likes: true,
+        },
+      },
     },
   });
 
   if (!post) {
     return <div>Post not found</div>;
   }
+
+  const userId = await getUserId();
 
   return (
     <div className="space-y-4 p-4">
@@ -114,9 +125,7 @@ export default async function PostPage({
       )}
 
       <div className="flex gap-2">
-        <button className="flex gap-1">
-          <Heart /> {0}
-        </button>
+        <LikePostButton likes={post._count.likes} postId={post.id} />
         <button className="flex gap-1">
           <MessageCircle size={22} /> {post.comments.length}
         </button>
@@ -129,55 +138,17 @@ export default async function PostPage({
 
       <div className="border-t border-border-primary pt-4">
         <h1 className="text-lg font-bold mb-2">Comments</h1>
+
+        {userId && (
+          <CreateComment postId={postId} className="flex gap-2 mb-6" />
+        )}
+
         {post.comments.length === 0 ? (
           <div>No comments yet.</div>
         ) : (
           <div className="space-y-4">
             {post.comments.map((comment: CommentData) => (
-              <div
-                key={comment.id}
-                className="inset-shadow-xs shadow-xs p-4 space-y-2 rounded-md"
-              >
-                <div className="flex items-center">
-                  <Link
-                    href={`/profile/${comment.author.username}`}
-                    className="inline-block mr-4"
-                  >
-                    <Image
-                      src={
-                        post.author.photo
-                          ? `${process.env.NEXT_PUBLIC_STORAGE_SUPABASE_URL}/${post.author.photo}`
-                          : `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                              post.author.username,
-                            )}`
-                      }
-                      alt="profile"
-                      className="rounded-full"
-                      width={44}
-                      height={44}
-                      unoptimized
-                    />
-                  </Link>
-
-                  <div className="flex flex-col justify-center">
-                    <div>
-                      <Link
-                        href={`/profile/${comment.author.username}`}
-                        className="inline-block font-bold text-sm"
-                      >
-                        {comment.author.name}
-                      </Link>
-                    </div>
-                    <div className="text-disabled text-xs">
-                      {comment.createdAt.toLocaleString("sv-SE")}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="text-sm">
-                  <ExpandableText text={comment.content} />
-                </div>
-              </div>
+              <CommentCard key={comment.id} comment={comment} />
             ))}
           </div>
         )}
