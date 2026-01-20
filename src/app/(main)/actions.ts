@@ -4,7 +4,7 @@ import { errorResponse, successResponse } from "@/lib/action/response";
 import { getPostComments } from "@/lib/db/posts";
 import { prismaClient } from "@/lib/db/prisma";
 import { getUserId } from "@/lib/db/users";
-import { revalidatePath } from "next/cache";
+import { refresh, revalidatePath } from "next/cache";
 import z from "zod";
 
 export async function postAction(prevState: any, formData: FormData) {
@@ -90,6 +90,7 @@ export async function likeAction(postId: string) {
     });
 
     revalidatePath("/");
+
     return errorResponse("You already like this post", null);
   }
 

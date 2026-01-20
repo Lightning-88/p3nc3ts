@@ -2,6 +2,9 @@ import { prismaClient } from "./prisma";
 
 export async function getPostComments(postId: string) {
   return await prismaClient.comment.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
     where: {
       postId,
     },

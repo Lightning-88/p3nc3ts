@@ -20,10 +20,6 @@ export function CommentModal({
   const [pending, startTransition] = useTransition();
 
   useEffect(() => {
-    if (postId) {
-      document.body.style.overflow = "hidden";
-    }
-
     startTransition(async () => {
       const data = await fetchCommentsAction(postId);
       setComments(data);
