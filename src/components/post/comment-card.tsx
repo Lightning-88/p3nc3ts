@@ -33,7 +33,7 @@ export function CommentCard({ comment }: { comment: CommentData }) {
               href={`/profile/${comment.author.username}`}
               className="inline-block font-bold text-sm"
             >
-              {comment.author.name}
+              {comment.author.username}
             </Link>
           </div>
           <div className="text-disabled text-xs">

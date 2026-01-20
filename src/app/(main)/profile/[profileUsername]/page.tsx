@@ -32,40 +32,22 @@ export default async function OtherProfilePage({
           id: true,
           username: true,
           name: true,
-          bio: true,
-          location: true,
           photo: true,
           createdAt: true,
-          updatedAt: true,
-        },
-      },
-      comments: {
-        include: {
-          author: {
-            select: {
-              id: true,
-              username: true,
-              name: true,
-              bio: true,
-              location: true,
-              photo: true,
-              createdAt: true,
-              updatedAt: true,
-            },
-          },
         },
       },
       _count: {
         select: {
           likes: true,
+          comments: true,
         },
       },
     },
   });
 
   return (
-    <div>
-      <div className="p-4 space-y-2 mb-4 shadow">
+    <>
+      <div className="relative p-4 space-y-2 mb-4 shadow">
         <div className="h-24 w-24">
           <Image
             src={
@@ -83,6 +65,18 @@ export default async function OtherProfilePage({
           />
         </div>
 
+        <div className="flex gap-4 text-sm absolute right-4 top-1/4">
+          <div>
+            <span className="font-bold">{posts.length}</span> <span>Posts</span>
+          </div>
+          <div>
+            <span className="font-bold">0</span> <span>Followers</span>
+          </div>
+          <div>
+            <span className="font-bold">0</span> <span>Following</span>
+          </div>
+        </div>
+
         <div>
           <h1 className="text-xl font-bold">{user.name}</h1>
           <p className="text-disabled">@{user.username}</p>
@@ -93,14 +87,6 @@ export default async function OtherProfilePage({
           <div className="flex gap-1">
             <MapPin size={20} /> {user.location ?? "Unknown"}
           </div>
-          <div className="flex gap-4 text-sm">
-            <div>
-              <span className="font-bold">0</span> <span>Following</span>
-            </div>
-            <div>
-              <span className="font-bold">0</span> <span>Followers</span>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -109,6 +95,6 @@ export default async function OtherProfilePage({
           <PostCard key={post.id} post={post} userId={isAuth} />
         ))}
       </div>
-    </div>
+    </>
   );
 }

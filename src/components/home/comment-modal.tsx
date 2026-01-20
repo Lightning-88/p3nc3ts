@@ -46,7 +46,7 @@ export function CommentModal({
 
         <div className="flex-1 overflow-y-auto min-h-[400px]">
           {pending ? (
-            <div className="flex items-center justify-center h-[400px]">
+            <div className="flex items-center justify-center font-bold h-[400px]">
               Loading...
             </div>
           ) : (

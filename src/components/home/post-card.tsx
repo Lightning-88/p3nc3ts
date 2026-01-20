@@ -58,7 +58,7 @@ export function PostCard({
                   href={`/profile/${post.author.username}`}
                   className="inline-block font-bold"
                 >
-                  {post.author.name}
+                  {post.author.username}
                 </Link>
               </div>
               <div className="text-disabled text-xs">
