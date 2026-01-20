@@ -1,6 +1,7 @@
 "use server";
 
 import { errorResponse, successResponse } from "@/lib/action/response";
+import { getPostComments } from "@/lib/db/posts";
 import { prismaClient } from "@/lib/db/prisma";
 import { getUserId } from "@/lib/db/users";
 import { revalidatePath } from "next/cache";
@@ -102,4 +103,8 @@ export async function likeAction(postId: string) {
   revalidatePath("/");
 
   return successResponse("Success like", null);
+}
+
+export async function fetchCommentsAction(postId: string) {
+  return await getPostComments(postId);
 }

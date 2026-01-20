@@ -1,48 +1,38 @@
 "use client";
 
 import { X } from "lucide-react";
-import { useEffect } from "react";
-import { CommentCard } from "../post/comment-card";
+import { useEffect, useState, useTransition } from "react";
 import { CreateComment } from "../post/create-comment";
-
-type CommentData = {
-  id: string;
-  createdAt: Date;
-  authorId: string;
-  content: string;
-  postId: string;
-  author: {
-    id: string;
-    username: string;
-    name: string;
-    bio: string | null;
-    location: string | null;
-    photo: string | null;
-    createdAt: Date;
-    updatedAt: Date;
-  };
-};
+import { CommentList } from "../post/comment-list";
+import { CommentData } from "@/types/post";
+import { fetchCommentsAction } from "@/app/(main)/actions";
 
 export function CommentModal({
-  comments,
   onClose,
   postId,
   userId,
 }: {
-  comments: CommentData[];
   onClose: () => void;
   postId: string;
   userId: string | null;
 }) {
+  const [comments, setComments] = useState<CommentData[]>([]);
+  const [pending, startTransition] = useTransition();
+
   useEffect(() => {
-    if (comments) {
+    if (postId) {
       document.body.style.overflow = "hidden";
     }
+
+    startTransition(async () => {
+      const data = await fetchCommentsAction(postId);
+      setComments(data);
+    });
 
     return () => {
       document.body.style = "";
     };
-  }, [comments]);
+  }, [postId]);
 
   return (
     <div className="fixed flex justify-center items-center h-dvh top-0 right-0 bottom-0 left-0 bg-[rgba(0,0,0,0.5)] z-10">
@@ -54,17 +44,15 @@ export function CommentModal({
           </button>
         </div>
 
-        {comments.length === 0 ? (
-          <div className="flex items-center justify-center min-h-[400px]">
-            No comments yet.
-          </div>
-        ) : (
-          <div className="space-y-4 pt-0 p-4 overflow-auto min-h-[400px] max-h-[400px]">
-            {comments.map((comment: CommentData) => (
-              <CommentCard key={comment.id} comment={comment} />
-            ))}
-          </div>
-        )}
+        <div className="flex-1 overflow-y-auto min-h-[400px]">
+          {pending ? (
+            <div className="flex items-center justify-center h-[400px]">
+              Loading...
+            </div>
+          ) : (
+            <CommentList comments={comments} />
+          )}
+        </div>
 
         {userId && (
           <CreateComment postId={postId} className="flex gap-2 pt-0 p-4" />
