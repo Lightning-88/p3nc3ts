@@ -95,7 +95,7 @@ export function PostCard({
             className="flex gap-1"
             onClick={() => setActiveModal("comment")}
           >
-            <MessageCircle size={22} /> {post.comments.length}
+            <MessageCircle size={22} /> {post._count.comments}
           </button>
           <CopyButton
             text={`${process.env.NEXT_PUBLIC_APP_URL}/post/${post.id}`}
@@ -109,7 +109,6 @@ export function PostCard({
 
       {activeModal === "comment" && (
         <CommentModal
-          comments={post.comments}
           postId={post.id}
           userId={userId}
           onClose={() => setActiveModal(null)}

@@ -8,34 +8,15 @@ export type PostDataType = {
   published: boolean;
   _count: {
     likes: number;
+    comments: number;
   };
   author: {
     id: string;
     username: string;
     name: string;
-    bio: string | null;
-    location: string | null;
     photo: string | null;
     createdAt: Date;
-    updatedAt: Date;
   };
-  comments: {
-    id: string;
-    createdAt: Date;
-    authorId: string;
-    content: string;
-    postId: string;
-    author: {
-      id: string;
-      username: string;
-      name: string;
-      bio: string | null;
-      location: string | null;
-      photo: string | null;
-      createdAt: Date;
-      updatedAt: Date;
-    };
-  }[];
 };
 
 export type CommentData = {
@@ -48,10 +29,6 @@ export type CommentData = {
     id: string;
     username: string;
     name: string;
-    bio: string | null;
-    location: string | null;
     photo: string | null;
-    createdAt: Date;
-    updatedAt: Date;
   };
 };
