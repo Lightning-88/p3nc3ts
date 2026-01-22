@@ -1,7 +1,7 @@
 "use client";
 
 import { createCommentAction } from "@/app/(main)/actions";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { InputGroup } from "../ui/input-group";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -9,14 +9,22 @@ import { Button } from "../ui/button";
 export function CreateComment({
   postId,
   className,
+  onSuccess,
 }: {
   postId: string;
   className?: string;
+  onSuccess: () => void;
 }) {
   const [state, formAction, pending] = useActionState(
     createCommentAction,
     null,
   );
+
+  useEffect(() => {
+    if (state?.success) {
+      onSuccess();
+    }
+  }, [state, onSuccess]);
 
   return (
     <form action={formAction} className={className ? className : ""}>

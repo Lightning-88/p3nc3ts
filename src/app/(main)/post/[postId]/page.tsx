@@ -117,7 +117,7 @@ export default async function PostPage({
       {post.photo && (
         <>
           {post.photo.endsWith("mp4") ? (
-            <div>
+            <div className="w-full overflow-hidden rounded-xl border border-border-primary aspect-[9/16]">
               <video
                 src={`${process.env.NEXT_PUBLIC_STORAGE_SUPABASE_URL}/${post.photo}`}
                 controls

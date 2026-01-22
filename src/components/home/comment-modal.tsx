@@ -1,11 +1,10 @@
 "use client";
 
 import { X } from "lucide-react";
-import { useEffect, useState, useTransition } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import { CreateComment } from "../post/create-comment";
 import { CommentList } from "../post/comment-list";
 import { CommentData } from "@/types/post";
-import { fetchCommentsAction } from "@/app/(main)/actions";
 
 export function CommentModal({
   onClose,
@@ -19,16 +18,31 @@ export function CommentModal({
   const [comments, setComments] = useState<CommentData[]>([]);
   const [pending, startTransition] = useTransition();
 
+  const fetchComments = useCallback(async () => {
+    try {
+      startTransition(async () => {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_APP_URL}/api/posts/comments?id=${postId}`,
+          {
+            method: "GET",
+          },
+        );
+        const { data } = await response.json();
+        setComments(data);
+      });
+    } catch {
+      alert("Error getting comments");
+    }
+  }, [postId]);
+
   useEffect(() => {
-    startTransition(async () => {
-      const data = await fetchCommentsAction(postId);
-      setComments(data);
-    });
+    document.body.style.overflow = "hidden";
+    fetchComments();
 
     return () => {
       document.body.style = "";
     };
-  }, [postId]);
+  }, [fetchComments]);
 
   return (
     <div className="fixed flex justify-center items-center h-dvh top-0 right-0 bottom-0 left-0 bg-[rgba(0,0,0,0.5)] z-10">
@@ -51,7 +65,11 @@ export function CommentModal({
         </div>
 
         {userId && (
-          <CreateComment postId={postId} className="flex gap-2 pt-0 p-4" />
+          <CreateComment
+            postId={postId}
+            onSuccess={fetchComments}
+            className="flex gap-2 pt-0 p-4"
+          />
         )}
       </div>
     </div>

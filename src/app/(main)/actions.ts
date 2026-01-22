@@ -105,7 +105,3 @@ export async function likeAction(postId: string) {
 
   return successResponse("Success like", null);
 }
-
-export async function fetchCommentsAction(postId: string) {
-  return await getPostComments(postId);
-}
