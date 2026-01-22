@@ -115,16 +115,31 @@ export default async function PostPage({
       <ExpandableText text={post.content} maxLength={200} />
 
       {post.photo && (
-        <div className="relative w-full overflow-hidden rounded-xl border border-border-primary aspect-square">
-          <Image
-            alt={post.id}
-            src={`${process.env.NEXT_PUBLIC_STORAGE_SUPABASE_URL}/${post.photo}`}
-            fill
-            priority
-            unoptimized
-            className="object-cover transition-transform duration-300 hover:scale-105"
-          />
-        </div>
+        <>
+          {post.photo.endsWith("mp4") ? (
+            <div>
+              <video
+                src={`${process.env.NEXT_PUBLIC_STORAGE_SUPABASE_URL}/${post.photo}`}
+                controls
+                autoPlay
+                muted
+                loop
+                playsInline
+              ></video>
+            </div>
+          ) : (
+            <div className="relative w-full overflow-hidden rounded-xl border border-border-primary aspect-square">
+              <Image
+                alt={post.id}
+                src={`${process.env.NEXT_PUBLIC_STORAGE_SUPABASE_URL}/${post.photo}`}
+                fill
+                priority
+                unoptimized
+                className="object-cover transition-transform duration-300 hover:scale-105"
+              />
+            </div>
+          )}
+        </>
       )}
 
       <div className="flex gap-2">
@@ -143,7 +158,7 @@ export default async function PostPage({
         <h1 className="text-lg font-bold mb-2">Comments</h1>
 
         {userId && (
-          <CreateComment postId={postId} className="flex gap-2 mb-6" />
+          <CreateComment postId={postId} className="flex gap-2 mb-2.5" />
         )}
 
         {post.comments.length === 0 ? (
