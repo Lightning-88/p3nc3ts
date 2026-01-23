@@ -1,11 +1,9 @@
-import { CommentCard } from "@/components/post/comment-card";
-import { CreateComment } from "@/components/post/create-comment";
+import { CommentPost } from "@/components/post/comment-post";
 import { LikePostButton } from "@/components/post/like-post-button";
 import { CopyButton } from "@/components/ui/copy-button";
 import { ExpandableText } from "@/components/ui/expandeble-text";
 import { prismaClient } from "@/lib/db/prisma";
 import { getUserId } from "@/lib/db/users";
-import { CommentData } from "@/types/post";
 import { LucideShare2, MessageCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -154,23 +152,7 @@ export default async function PostPage({
         </CopyButton>
       </div>
 
-      <div className="border-t border-border-primary pt-4">
-        <h1 className="text-lg font-bold mb-2">Comments</h1>
-
-        {userId && (
-          <CreateComment postId={postId} className="flex gap-2 mb-2.5" />
-        )}
-
-        {post.comments.length === 0 ? (
-          <div>No comments yet.</div>
-        ) : (
-          <div className="space-y-4">
-            {post.comments.map((comment: CommentData) => (
-              <CommentCard key={comment.id} comment={comment} />
-            ))}
-          </div>
-        )}
-      </div>
+      <CommentPost postId={post.id} userId={userId} />
     </div>
   );
 }

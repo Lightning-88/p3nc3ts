@@ -1,10 +1,10 @@
 "use client";
 
 import { X } from "lucide-react";
-import { useCallback, useEffect, useState, useTransition } from "react";
+import { useEffect } from "react";
 import { CreateComment } from "../post/create-comment";
 import { CommentList } from "../post/comment-list";
-import { CommentData } from "@/types/post";
+import { useFetchComments } from "@/hooks/use-fetch-comments";
 
 export function CommentModal({
   onClose,
@@ -15,25 +15,7 @@ export function CommentModal({
   postId: string;
   userId: string | null;
 }) {
-  const [comments, setComments] = useState<CommentData[]>([]);
-  const [pending, startTransition] = useTransition();
-
-  const fetchComments = useCallback(async () => {
-    try {
-      startTransition(async () => {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_APP_URL}/api/posts/comments?id=${postId}`,
-          {
-            method: "GET",
-          },
-        );
-        const { data } = await response.json();
-        setComments(data);
-      });
-    } catch {
-      alert("Error getting comments");
-    }
-  }, [postId]);
+  const [comments, fetchComments, pending] = useFetchComments(postId);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";

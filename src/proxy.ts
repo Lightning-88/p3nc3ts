@@ -19,7 +19,7 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/api/:path*",
+    "/(api|api/upload)",
     "/(profile|profile/settings)",
     "/notifications/:path*",
   ],
