@@ -4,6 +4,7 @@ import { PostDataType } from "@/types/post";
 
 export async function PostsFeed({ userId }: { userId: string | null }) {
   const posts = await prismaClient.post.findMany({
+    take: 20,
     orderBy: {
       createdAt: "desc",
     },

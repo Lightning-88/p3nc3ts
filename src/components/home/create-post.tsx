@@ -13,7 +13,12 @@ export function CreatePost() {
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) {
-      e.target.files = null;
+      e.target.value = "";
+      return setPhotoURL(null);
+    }
+    if (file.size > 1280000) {
+      e.target.value = "";
+      alert("Terlalu besar, max 1.25 MB");
       return setPhotoURL(null);
     }
 
@@ -46,10 +51,11 @@ export function CreatePost() {
       setPhotoURL(path);
     } catch {
       setPhotoURL(null);
+      e.target.value = "";
       alert("Error uploading file");
     } finally {
       setIsUploading(false);
-      e.target.files = null;
+      e.target.value = "";
     }
   };
 
