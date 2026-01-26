@@ -5,9 +5,34 @@ import { ExpandableText } from "@/components/ui/expandeble-text";
 import { prismaClient } from "@/lib/db/prisma";
 import { getUserId } from "@/lib/db/users";
 import { LucideShare2, MessageCircle } from "lucide-react";
+import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import z from "zod";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ postId: string }>;
+}): Promise<Metadata> {
+  const { postId } = await params;
+  const validatedPostId = z.uuid({ version: "v4" }).safeParse(postId);
+
+  if (validatedPostId.error) return { title: "p3nc3ts | Not Found" };
+
+  const postTitle = await prismaClient.post.findUnique({
+    where: {
+      id: postId,
+    },
+    select: {
+      content: true,
+    },
+  });
+
+  if (!postTitle) return { title: "p3nc3ts | Not Found" };
+
+  return { title: `p3nc3ts | ${postTitle.content.slice(0, 20)}` };
+}
 
 export default async function PostPage({
   params,
@@ -72,87 +97,92 @@ export default async function PostPage({
   const userId = await getUserId();
 
   return (
-    <div className="space-y-4 p-4">
-      <div className="flex items-center justify-between">
-        <div className="flex">
-          <Link
-            href={`/profile/${post.author.username}`}
-            className="inline-block mr-4"
-          >
-            <Image
-              src={
-                post.author.photo
-                  ? `${process.env.NEXT_PUBLIC_STORAGE_SUPABASE_URL}/${post.author.photo}`
-                  : `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                      post.author.username,
-                    )}`
-              }
-              alt="profile"
-              className="rounded-full"
-              width={48}
-              height={48}
-              unoptimized
-            />
-          </Link>
-          <div className="flex flex-col justify-center">
-            <div>
-              <Link
-                href={`/profile/${post.author.username}`}
-                className="inline-block font-bold"
-              >
-                {post.author.username}
-              </Link>
-            </div>
-            <div className="text-disabled text-xs">
-              {post.createdAt.toLocaleString("sv-SE")}
+    <div className="p-4">
+      <div className="w-full container mx-auto grid grid-cols-1 gap-4 place-items-center">
+        <div className="space-y-4 w-full max-w-[500px]">
+          <div className="flex">
+            <Link
+              href={`/profile/${post.author.username}`}
+              className="inline-block mr-4"
+            >
+              <Image
+                src={
+                  post.author.photo
+                    ? `${process.env.NEXT_PUBLIC_STORAGE_SUPABASE_URL}/${post.author.photo}`
+                    : `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                        post.author.username,
+                      )}`
+                }
+                alt="profile"
+                className="rounded-full"
+                width={48}
+                height={48}
+                unoptimized
+              />
+            </Link>
+            <div className="flex flex-col justify-center">
+              <div>
+                <Link
+                  href={`/profile/${post.author.username}`}
+                  className="inline-block font-bold"
+                >
+                  {post.author.username}
+                </Link>
+              </div>
+              <div className="text-disabled text-xs">
+                {post.createdAt.toLocaleString("sv-SE")}
+              </div>
             </div>
           </div>
+
+          <ExpandableText text={post.content} maxLength={200} />
+
+          {post.photo && (
+            <>
+              {post.photo.endsWith("mp4") ? (
+                <div className="overflow-hidden rounded-xl border border-border-primary max-h-[1920px]">
+                  <video
+                    src={`${process.env.NEXT_PUBLIC_STORAGE_SUPABASE_URL}/${post.photo}`}
+                    controls
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    className="object-cover"
+                  ></video>
+                </div>
+              ) : (
+                <div className="relative w-full overflow-hidden rounded-xl border border-border-primary aspect-square">
+                  <Image
+                    alt={post.id}
+                    src={`${process.env.NEXT_PUBLIC_STORAGE_SUPABASE_URL}/${post.photo}`}
+                    fill
+                    priority
+                    unoptimized
+                    className="object-cover transition-transform duration-300 hover:scale-105"
+                  />
+                </div>
+              )}
+            </>
+          )}
+
+          <div className="flex gap-2">
+            <LikePostButton likes={post._count.likes} postId={post.id} />
+            <button className="flex gap-1">
+              <MessageCircle size={22} /> {post.comments.length}
+            </button>
+            <CopyButton
+              text={`${process.env.NEXT_PUBLIC_APP_URL}/post/${post.id}`}
+            >
+              <button className="flex gap-1">
+                <LucideShare2 size={22} />
+              </button>
+            </CopyButton>
+          </div>
+
+          <CommentPost postId={post.id} userId={userId} />
         </div>
       </div>
-
-      <ExpandableText text={post.content} maxLength={200} />
-
-      {post.photo && (
-        <>
-          {post.photo.endsWith("mp4") ? (
-            <div className="w-full overflow-hidden rounded-xl border border-border-primary aspect-[9/16]">
-              <video
-                src={`${process.env.NEXT_PUBLIC_STORAGE_SUPABASE_URL}/${post.photo}`}
-                controls
-                autoPlay
-                muted
-                loop
-                playsInline
-              ></video>
-            </div>
-          ) : (
-            <div className="relative w-full overflow-hidden rounded-xl border border-border-primary aspect-square">
-              <Image
-                alt={post.id}
-                src={`${process.env.NEXT_PUBLIC_STORAGE_SUPABASE_URL}/${post.photo}`}
-                fill
-                priority
-                unoptimized
-                className="object-cover transition-transform duration-300 hover:scale-105"
-              />
-            </div>
-          )}
-        </>
-      )}
-
-      <div className="flex gap-2">
-        <LikePostButton likes={post._count.likes} postId={post.id} />
-        <button className="flex gap-1">
-          <MessageCircle size={22} /> {post.comments.length}
-        </button>
-        <CopyButton text={`${process.env.NEXT_PUBLIC_APP_URL}/post/${post.id}`}>
-          <button className="flex gap-1">
-            <LucideShare2 size={22} />
-          </button>
-        </CopyButton>
-      </div>
-
-      <CommentPost postId={post.id} userId={userId} />
     </div>
   );
 }

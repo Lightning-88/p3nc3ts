@@ -3,7 +3,29 @@ import { prismaClient } from "@/lib/db/prisma";
 import { getUserByUsername, getUserId } from "@/lib/db/users";
 import { PostDataType } from "@/types/post";
 import { MapPin } from "lucide-react";
+import { Metadata } from "next";
 import Image from "next/image";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ profileUsername: string }>;
+}): Promise<Metadata> {
+  const { profileUsername } = await params;
+
+  const user = await prismaClient.user.findUnique({
+    where: {
+      username: profileUsername,
+    },
+    select: {
+      username: true,
+    },
+  });
+
+  if (!user) return { title: "p3nc3ts | Not Found" };
+
+  return { title: `p3nc3ts | ${user.username}` };
+}
 
 export default async function OtherProfilePage({
   params,
