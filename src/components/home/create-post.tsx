@@ -1,14 +1,16 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { InputGroup } from "../ui/input-group";
 import { postAction } from "@/app/(main)/actions";
+import { useRouter } from "next/navigation";
 
 export function CreatePost() {
   const [state, formAction, pending] = useActionState(postAction, null);
   const [isUploading, setIsUploading] = useState(false);
   const [photoURL, setPhotoURL] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -57,6 +59,10 @@ export function CreatePost() {
       setIsUploading(false);
     }
   };
+
+  useEffect(() => {
+    if (state?.success) router.refresh();
+  }, [state, router]);
 
   return (
     <form action={formAction}>

@@ -13,7 +13,7 @@ export default async function HomePage() {
 
         <div className="lg:col-span-4">
           <Suspense fallback={<FeedLoading />}>
-            <PostsFeed userId={user} />
+            <PostsFeed />
           </Suspense>
         </div>
 
@@ -25,8 +25,28 @@ export default async function HomePage() {
 
 function FeedLoading() {
   return (
-    <div className="fixed -z-10 flex justify-center items-center top-0 bottom-0 right-0 left-0">
-      <h1 className="text-2xl font-bold">Loading...</h1>
+    <div className="space-y-8">
+      {[1, 2, 3].map((i) => (
+        <div
+          key={i}
+          className="rounded-lg p-4 shadow animate-pulse inset-shadow-xs border border-border-primary"
+        >
+          <div className="flex items-center space-x-4 mb-4">
+            <div className="rounded-full bg-border-primary h-10 w-10"></div>
+            <div className="flex-1 space-y-2">
+              <div className="h-4 bg-border-primary rounded w-1/3"></div>
+              <div className="h-3 bg-border-primary rounded w-1/4"></div>
+            </div>
+          </div>
+          <div className="h-4 bg-border-primary rounded w-1/3 mb-4"></div>
+          <div className="h-96 bg-border-primary rounded-xl w-full mb-4"></div>
+          <div className="flex space-x-4">
+            <div className="h-8 bg-border-primary rounded w-8"></div>
+            <div className="h-8 bg-border-primary rounded w-8"></div>
+            <div className="h-8 bg-border-primary rounded w-8"></div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

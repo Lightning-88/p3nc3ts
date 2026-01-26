@@ -1,10 +1,12 @@
-import { PostCard } from "@/components/home/post-card";
 import { prismaClient } from "@/lib/db/prisma";
-import { PostDataType } from "@/types/post";
+import { PostList } from "./post-list";
+import { getUserId } from "@/lib/db/users";
 
-export async function PostsFeed({ userId }: { userId: string | null }) {
+export async function PostsFeed() {
+  const user = await getUserId();
+
   const posts = await prismaClient.post.findMany({
-    take: 20,
+    take: 15,
     orderBy: {
       createdAt: "desc",
     },
@@ -27,11 +29,5 @@ export async function PostsFeed({ userId }: { userId: string | null }) {
     },
   });
 
-  return (
-    <div className="space-y-8">
-      {posts.map((post: PostDataType) => (
-        <PostCard key={post.id} post={post} userId={userId} />
-      ))}
-    </div>
-  );
+  return <PostList initialPosts={posts} userId={user} />;
 }
