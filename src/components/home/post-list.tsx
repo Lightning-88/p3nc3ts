@@ -20,7 +20,10 @@ export function PostList({
       : undefined,
   );
   const [hasMore, setHasMore] = useState(true);
-  const { isIntersecting, ref } = useInView();
+  const { isIntersecting, ref } = useInView({
+    threshold: 0,
+    rootMargin: "100px",
+  });
 
   const fetchPosts = useCallback(async () => {
     try {

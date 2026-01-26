@@ -6,7 +6,7 @@ export async function PostsFeed() {
   const user = await getUserId();
 
   const posts = await prismaClient.post.findMany({
-    take: 15,
+    take: 10,
     orderBy: {
       createdAt: "desc",
     },

@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
   const cursor = searchParams.get("cursor");
 
   const posts = await prismaClient.post.findMany({
-    take: 15,
+    take: 10,
     skip: cursor ? 1 : 0,
     cursor: cursor ? { id: cursor } : undefined,
     orderBy: {
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
     },
   });
 
-  const nextCursor = posts.length === 20 ? posts[20 - 1].id : undefined;
+  const nextCursor = posts.length === 10 ? posts[10 - 1].id : undefined;
 
   return NextResponse.json(
     successResponse("Success get posts", { posts, nextCursor }),
