@@ -55,7 +55,6 @@ export function CreatePost() {
       alert("Error uploading file");
     } finally {
       setIsUploading(false);
-      e.target.value = "";
     }
   };
 

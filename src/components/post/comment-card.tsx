@@ -37,7 +37,7 @@ export function CommentCard({ comment }: { comment: CommentData }) {
             </Link>
           </div>
           <div className="text-disabled text-xs">
-            {comment.createdAt.toLocaleString("sv-SE")}
+            {new Date(comment.createdAt).toLocaleString("sv-SE")}
           </div>
         </div>
       </div>
