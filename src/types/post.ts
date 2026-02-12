@@ -17,6 +17,9 @@ export type PostDataType = {
     photo: string | null;
     createdAt: Date;
   };
+  likes: {
+    authorId: string;
+  }[];
 };
 
 export type CommentData = {

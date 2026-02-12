@@ -1,10 +1,12 @@
 import { successResponse } from "@/lib/action/response";
 import { prismaClient } from "@/lib/db/prisma";
+import { getUserId } from "@/lib/db/users";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
   const cursor = searchParams.get("cursor");
+  const userId = await getUserId();
 
   const posts = await prismaClient.post.findMany({
     take: 10,
@@ -21,6 +23,14 @@ export async function GET(request: NextRequest) {
           name: true,
           photo: true,
           createdAt: true,
+        },
+      },
+      likes: {
+        where: {
+          authorId: userId ?? "00000000-0000-0000-0000-000000000000",
+        },
+        select: {
+          authorId: true,
         },
       },
       _count: {

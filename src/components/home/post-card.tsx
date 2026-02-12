@@ -3,13 +3,13 @@
 import Image from "next/image";
 import { ExpandableText } from "../ui/expandeble-text";
 import Link from "next/link";
-import { Heart, LucideShare2, MessageCircle } from "lucide-react";
+import { LucideShare2, MessageCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CommentModal } from "./comment-modal";
 import { CopyButton } from "../ui/copy-button";
 import { MediaModal } from "./media-modal";
-import { likeAction } from "@/app/(main)/actions";
 import { PostDataType } from "@/types/post";
+import { LikePostButton } from "../post/like-post-button";
 
 export function PostCard({
   post,
@@ -19,6 +19,7 @@ export function PostCard({
   userId: string | null;
 }) {
   const [activeModal, setActiveModal] = useState<string | null>(null);
+  const isLikedByUser = post.likes.find((id) => id.authorId === userId);
 
   useEffect(() => {
     if (activeModal) document.body.style.overflow = "hidden";
@@ -62,7 +63,7 @@ export function PostCard({
                 </Link>
               </div>
               <div className="text-disabled text-xs">
-                {post.createdAt.toLocaleString("sv-SE")}
+                {new Date(post.createdAt).toLocaleString("sv-SE")}
               </div>
             </div>
           </div>
@@ -85,12 +86,18 @@ export function PostCard({
         )}
 
         <div className="flex gap-2">
-          <button
+          {/* <button
             className="flex gap-1"
             onClick={async () => await likeAction(post.id)}
           >
             <Heart /> {post._count.likes >= 0 ? post._count.likes : 0}
-          </button>
+          </button> */}
+          <LikePostButton
+            postId={post.id}
+            userId={userId}
+            isLiked={isLikedByUser?.authorId}
+            likes={post._count.likes}
+          />
           <button
             className="flex gap-1"
             onClick={() => setActiveModal("comment")}

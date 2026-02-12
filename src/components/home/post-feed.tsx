@@ -20,6 +20,14 @@ export async function PostsFeed() {
           createdAt: true,
         },
       },
+      likes: {
+        where: {
+          authorId: user ?? "00000000-0000-0000-0000-000000000000",
+        },
+        select: {
+          authorId: true,
+        },
+      },
       _count: {
         select: {
           likes: true,

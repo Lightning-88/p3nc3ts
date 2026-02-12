@@ -46,6 +46,8 @@ export default async function PostPage({
     return <div>Invalid post ID</div>;
   }
 
+  const userId = await getUserId();
+
   const post = await prismaClient.post.findUnique({
     where: {
       id: validatedPostId.data,
@@ -61,6 +63,14 @@ export default async function PostPage({
           photo: true,
           createdAt: true,
           updatedAt: true,
+        },
+      },
+      likes: {
+        where: {
+          authorId: userId ?? "00000000-0000-0000-0000-000000000000",
+        },
+        select: {
+          authorId: true,
         },
       },
       comments: {
@@ -94,7 +104,7 @@ export default async function PostPage({
     return <div>Post not found</div>;
   }
 
-  const userId = await getUserId();
+  const isLikedByUser = post.likes.find((id) => id.authorId === userId);
 
   return (
     <div className="p-4">
@@ -167,7 +177,12 @@ export default async function PostPage({
           )}
 
           <div className="flex gap-2">
-            <LikePostButton likes={post._count.likes} postId={post.id} />
+            <LikePostButton
+              likes={post._count.likes}
+              postId={post.id}
+              userId={userId}
+              isLiked={isLikedByUser?.authorId}
+            />
             <button className="flex gap-1">
               <MessageCircle size={22} /> {post.comments.length}
             </button>

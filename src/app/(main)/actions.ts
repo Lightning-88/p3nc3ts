@@ -89,8 +89,6 @@ export async function likeAction(postId: string) {
       },
     });
 
-    revalidatePath("/");
-
     return errorResponse("You already like this post", null);
   }
 
@@ -100,8 +98,6 @@ export async function likeAction(postId: string) {
       postId,
     },
   });
-
-  revalidatePath("/");
 
   return successResponse("Success like", null);
 }
