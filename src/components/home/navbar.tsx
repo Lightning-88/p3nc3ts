@@ -18,7 +18,13 @@ type UserData = {
   updatedAt: Date;
 } | null;
 
-export default function Navbar({ user }: { user: UserData }) {
+export default function Navbar({
+  user,
+  notifCount,
+}: {
+  user: UserData;
+  notifCount: number;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const location = usePathname();
 
@@ -49,6 +55,16 @@ export default function Navbar({ user }: { user: UserData }) {
             </h1>
           </Link>
           <div className="flex items-center gap-3">
+            {user && (
+              <Link href="/notifications" className="relative">
+                <Bell strokeWidth={1.5} />
+                {notifCount > 0 && (
+                  <span className="absolute -top-2 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+                    {notifCount > 9 ? "9+" : notifCount}
+                  </span>
+                )}
+              </Link>
+            )}
             <button
               className="ring ring-border-primary p-2 rounded-md"
               onClick={() => setIsOpen(true)}
@@ -99,7 +115,7 @@ const sidebarsMobileMenu = [
     icon: <Home size={20} />,
   },
   {
-    title: "Post",
+    title: "Feed",
     link: "/post",
     className: "flex gap-3 items-center",
     icon: <Bell size={20} />,

@@ -10,10 +10,12 @@ export function CommentModal({
   onClose,
   postId,
   userId,
+  postAuthorId,
 }: {
   onClose: () => void;
   postId: string;
   userId: string | null;
+  postAuthorId: string;
 }) {
   const [comments, fetchComments, pending] = useFetchComments(postId);
 
@@ -48,6 +50,7 @@ export function CommentModal({
 
         {userId && (
           <CreateComment
+            postAuthorId={postAuthorId}
             postId={postId}
             onSuccess={fetchComments}
             className="flex gap-2 pt-0 p-4"

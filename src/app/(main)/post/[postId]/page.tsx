@@ -178,6 +178,7 @@ export default async function PostPage({
 
           <div className="flex gap-2">
             <LikePostButton
+              postAuthorId={post.authorId}
               likes={post._count.likes}
               postId={post.id}
               userId={userId}
@@ -195,7 +196,11 @@ export default async function PostPage({
             </CopyButton>
           </div>
 
-          <CommentPost postId={post.id} userId={userId} />
+          <CommentPost
+            postId={post.id}
+            userId={userId}
+            postAuthorId={post.authorId}
+          />
         </div>
       </div>
     </div>

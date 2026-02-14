@@ -93,6 +93,7 @@ export function PostCard({
             <Heart /> {post._count.likes >= 0 ? post._count.likes : 0}
           </button> */}
           <LikePostButton
+            postAuthorId={post.authorId}
             postId={post.id}
             userId={userId}
             isLiked={isLikedByUser?.authorId}
@@ -116,6 +117,7 @@ export function PostCard({
 
       {activeModal === "comment" && (
         <CommentModal
+          postAuthorId={post.authorId}
           postId={post.id}
           userId={userId}
           onClose={() => setActiveModal(null)}

@@ -1,10 +1,9 @@
 "use server";
 
 import { errorResponse, successResponse } from "@/lib/action/response";
-import { getPostComments } from "@/lib/db/posts";
 import { prismaClient } from "@/lib/db/prisma";
 import { getUserId } from "@/lib/db/users";
-import { refresh, revalidatePath } from "next/cache";
+import { revalidatePath } from "next/cache";
 import z from "zod";
 
 export async function postAction(prevState: any, formData: FormData) {
@@ -39,6 +38,7 @@ export async function createCommentAction(prevState: any, formData: FormData) {
   const commentSchema = z.object({
     content: z.string().min(1),
     postId: z.string(),
+    postAuthorId: z.string(),
   });
   const result = commentSchema.safeParse(Object.fromEntries(formData));
   if (result.error)
@@ -50,12 +50,25 @@ export async function createCommentAction(prevState: any, formData: FormData) {
   const authorId = await getUserId();
   if (!authorId) return errorResponse("Auth error", null);
 
-  await prismaClient.comment.create({
-    data: {
-      content: result.data.content,
-      authorId,
-      postId: result.data.postId,
-    },
+  await prismaClient.$transaction(async (trx) => {
+    await trx.comment.create({
+      data: {
+        content: result.data.content,
+        authorId,
+        postId: result.data.postId,
+      },
+    });
+
+    if (authorId !== result.data.postAuthorId) {
+      await trx.notification.create({
+        data: {
+          creatorId: authorId,
+          postId: result.data.postId,
+          userId: result.data.postAuthorId,
+          type: "comment",
+        },
+      });
+    }
   });
 
   revalidatePath("/");
@@ -63,7 +76,7 @@ export async function createCommentAction(prevState: any, formData: FormData) {
   return successResponse("Success comment", null);
 }
 
-export async function likeAction(postId: string) {
+export async function likeAction(postId: string, postAuthorId: string) {
   const authorId = await getUserId();
   if (!authorId) return errorResponse("Auth error", null);
 
@@ -80,23 +93,46 @@ export async function likeAction(postId: string) {
   });
 
   if (isLike) {
-    await prismaClient.like.delete({
-      where: {
-        postId_authorId: {
-          authorId,
-          postId,
+    await prismaClient.$transaction([
+      prismaClient.like.delete({
+        where: {
+          postId_authorId: {
+            authorId,
+            postId,
+          },
         },
-      },
-    });
+      }),
+
+      prismaClient.notification.deleteMany({
+        where: {
+          creatorId: authorId,
+          postId,
+          type: "like",
+        },
+      }),
+    ]);
 
     return errorResponse("You already like this post", null);
   }
 
-  await prismaClient.like.create({
-    data: {
-      authorId,
-      postId,
-    },
+  await prismaClient.$transaction(async (trx) => {
+    await trx.like.create({
+      data: {
+        authorId,
+        postId,
+      },
+    });
+
+    if (authorId !== postAuthorId) {
+      await trx.notification.create({
+        data: {
+          type: "like",
+          userId: postAuthorId,
+          creatorId: authorId,
+          postId,
+        },
+      });
+    }
   });
 
   return successResponse("Success like", null);

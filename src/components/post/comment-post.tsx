@@ -7,9 +7,11 @@ import { useFetchComments } from "@/hooks/use-fetch-comments";
 import { useEffect } from "react";
 
 export function CommentPost({
+  postAuthorId,
   postId,
   userId,
 }: {
+  postAuthorId: string;
   postId: string;
   userId: string | null;
 }) {
@@ -25,6 +27,7 @@ export function CommentPost({
 
       {userId && (
         <CreateComment
+          postAuthorId={postAuthorId}
           postId={postId}
           onSuccess={fetchComments}
           className="flex gap-2 mb-2.5"

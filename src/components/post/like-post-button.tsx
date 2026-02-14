@@ -9,11 +9,13 @@ export function LikePostButton({
   likes,
   userId,
   isLiked,
+  postAuthorId,
 }: {
   postId: string;
   likes: number;
   userId: string | null;
   isLiked: string | undefined;
+  postAuthorId: string;
 }) {
   const [isLikedByUser, setIsLikedByUser] = useState(isLiked ? true : false);
   const [currentLikes, setCurrentLikes] = useState(likes);
@@ -29,7 +31,7 @@ export function LikePostButton({
 
     await new Promise((resolve) => resolve(setTimeout(() => {}, 2000)));
 
-    await likeAction(postId);
+    await likeAction(postId, postAuthorId);
   };
 
   return (

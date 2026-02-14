@@ -7,10 +7,12 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 
 export function CreateComment({
+  postAuthorId,
   postId,
   className,
   onSuccess,
 }: {
+  postAuthorId: string;
   postId: string;
   className?: string;
   onSuccess: () => void;
@@ -29,6 +31,7 @@ export function CreateComment({
   return (
     <form action={formAction} className={className ? className : ""}>
       <input type="hidden" name="postId" value={postId} />
+      <input type="hidden" name="postAuthorId" value={postAuthorId} />
       <InputGroup>
         <Input
           type="text"
