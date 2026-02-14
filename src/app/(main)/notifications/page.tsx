@@ -16,6 +16,7 @@ type NotificationData = {
   createdAt: Date;
   creator: {
     username: string;
+    photo: string | null;
   };
   post: {
     photo: string | null;
@@ -49,6 +50,7 @@ export default async function NotificationsPage() {
       creator: {
         select: {
           username: true,
+          photo: true,
         },
       },
       post: {
@@ -104,10 +106,10 @@ export default async function NotificationsPage() {
                 >
                   <Image
                     src={
-                      false
-                        ? `${process.env.NEXT_PUBLIC_STORAGE_SUPABASE_URL}/${notification.creatorId}`
+                      notification.creator.photo
+                        ? `${process.env.NEXT_PUBLIC_STORAGE_SUPABASE_URL}/${notification.creator.photo}`
                         : `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                            "User",
+                            notification.creator.username,
                           )}`
                     }
                     alt="profile"
@@ -140,14 +142,16 @@ export default async function NotificationsPage() {
 
               <div>
                 {notification.post?.photo ? (
-                  <Image
-                    src={`${process.env.NEXT_PUBLIC_STORAGE_SUPABASE_URL}/${notification.post.photo}`}
-                    alt={notification.postId ?? "postId"}
-                    width={40}
-                    height={40}
-                    className="w-10 h-10 object-cover rounded-md border border-border-primary"
-                    unoptimized
-                  />
+                  <Link href={`/post/${notification.postId}`}>
+                    <Image
+                      src={`${process.env.NEXT_PUBLIC_STORAGE_SUPABASE_URL}/${notification.post.photo}`}
+                      alt={notification.postId ?? "postId"}
+                      width={40}
+                      height={40}
+                      className="w-10 h-10 object-cover rounded-md border border-border-primary"
+                      unoptimized
+                    />
+                  </Link>
                 ) : (
                   <Link href={`/post/${notification.postId}`}>
                     <Button className="cursor-pointer">
