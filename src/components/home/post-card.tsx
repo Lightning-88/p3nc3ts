@@ -29,6 +29,8 @@ export function PostCard({
     };
   }, [activeModal]);
 
+  if (post.photo?.endsWith(".mp4")) return;
+
   return (
     <>
       <div className="inset-shadow-xs rounded-md space-y-4 border border-border-primary p-4">

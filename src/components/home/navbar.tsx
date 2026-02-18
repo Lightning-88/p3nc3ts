@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Home, Menu, User, X } from "lucide-react";
+import { Bell, Home, Menu, User, Video, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -119,6 +119,12 @@ const sidebarsMobileMenu = [
     link: "/post",
     className: "flex gap-3 items-center",
     icon: <Bell size={20} />,
+  },
+  {
+    title: "Shorts",
+    link: "/shorts",
+    className: "flex gap-3 items-center",
+    icon: <Video size={20} />,
   },
 ];
 

@@ -18,9 +18,15 @@ export function CreatePost() {
       e.target.value = "";
       return setPhotoURL(null);
     }
-    if (file.size > 1280000) {
+    if (file.size > 1280000 && file.type.split(/\//)[0] === "image") {
       e.target.value = "";
-      alert("Terlalu besar, max 1.25 MB");
+      alert("Terlalu besar, max ukuran gambar 1.25 MB");
+      return setPhotoURL(null);
+    }
+
+    if (file.size > 5242880 && file.type.split(/\//)[0] === "video") {
+      e.target.value = "";
+      alert("Terlalu besar, max ukuran video 5 MB");
       return setPhotoURL(null);
     }
 
@@ -84,7 +90,7 @@ export function CreatePost() {
           <input
             type="file"
             id="postPhoto"
-            accept="image/jpg,image/png,image/jpeg"
+            accept="image/jpg,image/png,image/jpeg,video/mp4"
             onChange={handleFileUpload}
             className="w-full block text-sm file:Photo file:py-2 file:px-4 file:rounded-md file:cursor-pointer file:hover:opacity-80 file:border file:border-border-primary file:mr-2"
           />
