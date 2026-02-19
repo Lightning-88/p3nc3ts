@@ -41,5 +41,5 @@ export default async function ShortsPage() {
     },
   });
 
-  return <ShortList shorts={shorts} />;
+  return <ShortList shorts={shorts} currentUser={user} />;
 }

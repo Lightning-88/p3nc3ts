@@ -125,6 +125,7 @@ const sidebarsMobileMenu = [
     link: "/shorts",
     className: "flex gap-3 items-center",
     icon: <Video size={20} />,
+    prefetch: false,
   },
 ];
 
@@ -161,6 +162,7 @@ function SidebarMobile({
             href={sidebar.link}
             key={sidebar.title}
             className={sidebar.className}
+            prefetch={sidebar.prefetch}
           >
             {sidebar.icon} {sidebar.title}
           </Link>
