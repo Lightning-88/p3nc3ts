@@ -11,7 +11,7 @@ import {
   MessageCircle,
   PauseCircle,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { SyntheticEvent, useEffect, useRef, useState } from "react";
 import { CopyButton } from "../ui/copy-button";
 import Link from "next/link";
 import { CommentModal } from "../home/comment-modal";
@@ -177,7 +177,7 @@ function LikeShortButton({
     if (!userId) return;
 
     const prevIsLiked = isLikedByUser;
-    const prevLikes = likes;
+    const prevLikes = currentLikes;
 
     setIsLikedByUser(!prevIsLiked);
     setCurrentLikes(prevIsLiked ? prevLikes - 1 : prevLikes + 1);

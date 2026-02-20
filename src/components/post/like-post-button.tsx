@@ -24,7 +24,7 @@ export function LikePostButton({
     if (!userId) return;
 
     const prevIsLiked = isLikedByUser;
-    const prevLikes = likes;
+    const prevLikes = currentLikes;
 
     setIsLikedByUser(!prevIsLiked);
     setCurrentLikes(prevIsLiked ? prevLikes - 1 : prevLikes + 1);

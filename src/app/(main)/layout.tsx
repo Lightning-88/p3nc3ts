@@ -1,4 +1,5 @@
 import Navbar from "@/components/home/navbar";
+import { LoadingBar } from "@/components/ui/loading-bar";
 import { prismaClient } from "@/lib/db/prisma";
 import { getUser } from "@/lib/db/users";
 
@@ -19,6 +20,7 @@ export default async function MainLayout({
 
   return (
     <>
+      <LoadingBar />
       <Navbar user={user} notifCount={haveNotification.length} />
       <div className="pt-14">{children}</div>
     </>
